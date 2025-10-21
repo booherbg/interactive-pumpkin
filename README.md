@@ -4,7 +4,8 @@ An interactive web application for controlling a Halloween pumpkin LED installat
 
 ## Features
 
-- 🎨 **Visual Feature Selection** - Select different parts of your pumpkin (eyes, nose, mouth, shell, fillers)
+- 🎨 **Visual Feature Selection** - Select different parts of your pumpkin (eyes, nose, mouth, shell, fillers, rims)
+- 🔗 **Multi-Segment Control** - Control multiple segments at once (e.g., "Both Rims", "All Face")
 - ✨ **WLED Effects** - Choose from 11+ built-in WLED effects (Fire, Rainbow, Sparkle, etc.)
 - 🌈 **Color Palettes** - Apply themed palettes (Halloween, Fire, Ocean, Party, etc.)
 - ⚡ **Real-time Control** - Changes appear instantly on the physical LEDs
@@ -73,12 +74,15 @@ The server will start on port 3000. You'll see output like:
 ✓ 10 features configured
 ✓ 11 effects available
 ✓ 10 palettes available
+[WLED Debug] Enabled for 2 controllers
 ✓ 12v Controller (192.168.1.100) - Online
   WLED Version: 0.14.3
 🚀 Server started successfully!
    Local:   http://localhost:3000
    Network: http://192.168.1.X:3000
 ```
+
+**Note:** Debug mode is enabled by default and will log all WLED commands. To disable: `npm run start:quiet`
 
 ### 6. Open on iPad
 
@@ -228,6 +232,32 @@ Edit `config/palettes.json` to add custom palettes. Include color previews for b
 
 Edit `config/pumpkin.json` to remap features to different segments or controllers. This is useful if your physical layout changes.
 
+### Creating Multi-Segment Features
+
+You can create features that control multiple segments at once (even across different controllers):
+
+```json
+{
+  "bothRims": {
+    "name": "Both Rims 🔗",
+    "group": "rim",
+    "multiSegment": true,
+    "targets": [
+      { "controller": "pumpkin_12v", "segment": 7 },
+      { "controller": "pumpkin_24v", "segment": 3 }
+    ],
+    "color": "#FF6600"
+  }
+}
+```
+
+Multi-segment features:
+- Use `multiSegment: true` to enable
+- Define `targets` array with controller/segment pairs
+- Work across different controllers automatically
+- Display with a dashed border in the UI (marked with 🔗)
+- Use WLED's native multi-segment API for efficiency
+
 ### Creating Multiple Configurations
 
 You can create multiple JSON files for different setups (e.g., `pumpkin-front.json`, `pumpkin-back.json`) and switch between them by modifying the `loadJSON()` calls in `config-loader.js`.
@@ -247,6 +277,38 @@ npm run dev
 # Interactive testing
 npm test
 ```
+
+### Debug Mode
+
+Debug mode logs all WLED API commands to the server console. **It's enabled by default**.
+
+To disable debug logging:
+
+```bash
+# Disable debug output
+WLED_DEBUG=false npm start
+```
+
+Example debug output (controller online):
+```
+[WLED Debug] Enabled for 2 controllers
+[WLED 12v Controller (Main Pumpkin)] → POST /json/state {"seg":[{"id":0,"fx":9,"pal":2,"sx":128,"ix":128}]}
+[WLED 12v Controller (Main Pumpkin)] ✓ Response: 200 OK
+```
+
+Example debug output (controller offline):
+```
+[WLED 12v Controller (Main Pumpkin)] → POST /json/state {"seg":[{"id":5,"fx":35,"pal":9}]}
+[WLED 12v Controller (Main Pumpkin)] ✗ Error: connect ECONNREFUSED 10.0.1.100:80
+Error setting segment 5 on 12v Controller (Main Pumpkin): connect ECONNREFUSED 10.0.1.100:80
+```
+
+**Commands are logged BEFORE sending**, so you'll see them even if controllers are offline. This is useful for:
+- Testing without hardware (controllers can be offline)
+- Debugging API calls to WLED
+- Verifying correct payloads
+- Troubleshooting multi-segment features
+- Learning WLED's JSON API format
 
 ## Contributing
 

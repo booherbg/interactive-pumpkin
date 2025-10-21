@@ -82,6 +82,39 @@
       "segment": 2,
       "group": "background",
       "color": "#000044"
+    },
+    "bothRims": {
+      "name": "Outer Shell 🔗",
+      "group": "rim",
+      "multiSegment": true,
+      "targets": [
+        { "controller": "pumpkin_12v", "segment": 5 },
+        { "controller": "pumpkin_12v", "segment": 6 }
+      ],
+      "color": "#FF6600"
+    },
+    "allFace": {
+      "name": "All Face 🔗",
+      "group": "face",
+      "multiSegment": true,
+      "targets": [
+        { "controller": "pumpkin_12v", "segment": 0 },
+        { "controller": "pumpkin_12v", "segment": 1 },
+        { "controller": "pumpkin_12v", "segment": 2 },
+        { "controller": "pumpkin_12v", "segment": 3 }
+      ],
+      "color": "#FF6600"
+    },
+    "allShell": {
+      "name": "All Shell 🔗",
+      "group": "shell",
+      "multiSegment": true,
+      "targets": [
+        { "controller": "pumpkin_12v", "segment": 4 },
+        { "controller": "pumpkin_12v", "segment": 5 },
+        { "controller": "pumpkin_12v", "segment": 6 }
+      ],
+      "color": "#FF4400"
     }
   }
 }

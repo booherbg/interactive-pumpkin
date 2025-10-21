@@ -11,6 +11,11 @@ export function createFeatureButton(featureKey, feature, isActive = false) {
   button.dataset.feature = featureKey;
   button.dataset.group = feature.group;
   
+  // Mark multi-segment features
+  if (feature.multiSegment) {
+    button.dataset.multiSegment = 'true';
+  }
+  
   button.innerHTML = `
     <div class="feature-name">${feature.name}</div>
     <div class="feature-status">⬛</div>

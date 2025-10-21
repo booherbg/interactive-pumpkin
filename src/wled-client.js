@@ -5,10 +5,25 @@ import axios from 'axios';
  * Handles communication with WLED controllers
  */
 export class WLEDClient {
-  constructor(ip, name = 'WLED Controller') {
+  /**
+   * @param {string} ip - IP address of WLED controller
+   * @param {string} name - Friendly name for logging
+   * @param {boolean} debug - Enable debug logging (default: true)
+   */
+  constructor(ip, name = 'WLED Controller', debug = true) {
     this.baseUrl = `http://${ip}`;
     this.name = name;
     this.timeout = 5000; // 5 second timeout
+    this.debug = debug;
+  }
+
+  /**
+   * Log debug information if debug mode is enabled
+   */
+  log(...args) {
+    if (this.debug) {
+      console.log(`[WLED ${this.name}]`, ...args);
+    }
   }
 
   /**
@@ -25,23 +40,31 @@ export class WLEDClient {
    * palette0-9.json files directly to the WLED controller via /edit page.
    */
   async setSegment(segmentId, props) {
+    const payload = {
+      seg: [{
+        id: segmentId,
+        ...props
+      }]
+    };
+    
+    // Log before sending (so it logs even if controller is offline)
+    this.log('→ POST /json/state', JSON.stringify(payload));
+    
     try {
-      const payload = {
-        seg: [{
-          id: segmentId,
-          ...props
-        }]
-      };
-      
       const response = await axios.post(
         `${this.baseUrl}/json/state`,
         payload,
         { timeout: this.timeout }
       );
       
+      this.log('✓ Response:', response.status, 'OK');
+      
       return { success: true, data: response.data };
     } catch (error) {
+      // Log error details
+      this.log('✗ Error:', error.message);
       console.error(`Error setting segment ${segmentId} on ${this.name}:`, error.message);
+      
       return { 
         success: false, 
         error: error.message,
@@ -56,17 +79,26 @@ export class WLEDClient {
    * Example: [{ id: 0, fx: 9 }, { id: 1, col: [[255, 0, 0]] }]
    */
   async setSegments(segments) {
+    const payload = { seg: segments };
+    
+    // Log before sending (so it logs even if controller is offline)
+    this.log('→ POST /json/state (multi-segment)', JSON.stringify(payload));
+    
     try {
-      const payload = { seg: segments };
       const response = await axios.post(
         `${this.baseUrl}/json/state`,
         payload,
         { timeout: this.timeout }
       );
       
+      this.log('✓ Response:', response.status, 'OK');
+      
       return { success: true, data: response.data };
     } catch (error) {
+      // Log error details
+      this.log('✗ Error:', error.message);
       console.error(`Error setting segments on ${this.name}:`, error.message);
+      
       return { 
         success: false, 
         error: error.message,
@@ -121,16 +153,26 @@ export class WLEDClient {
    * Turn controller on/off
    */
   async setPower(on) {
+    const payload = { on };
+    
+    // Log before sending (so it logs even if controller is offline)
+    this.log('→ POST /json/state (power)', JSON.stringify(payload));
+    
     try {
       const response = await axios.post(
         `${this.baseUrl}/json/state`,
-        { on },
+        payload,
         { timeout: this.timeout }
       );
       
+      this.log('✓ Response:', response.status, 'OK');
+      
       return { success: true, data: response.data };
     } catch (error) {
+      // Log error details
+      this.log('✗ Error:', error.message);
       console.error(`Error setting power on ${this.name}:`, error.message);
+      
       return { 
         success: false, 
         error: error.message,
@@ -143,16 +185,26 @@ export class WLEDClient {
    * Set global brightness (0-255)
    */
   async setBrightness(bri) {
+    const payload = { bri: Math.max(0, Math.min(255, bri)) };
+    
+    // Log before sending (so it logs even if controller is offline)
+    this.log('→ POST /json/state (brightness)', JSON.stringify(payload));
+    
     try {
       const response = await axios.post(
         `${this.baseUrl}/json/state`,
-        { bri: Math.max(0, Math.min(255, bri)) },
+        payload,
         { timeout: this.timeout }
       );
       
+      this.log('✓ Response:', response.status, 'OK');
+      
       return { success: true, data: response.data };
     } catch (error) {
+      // Log error details
+      this.log('✗ Error:', error.message);
       console.error(`Error setting brightness on ${this.name}:`, error.message);
+      
       return { 
         success: false, 
         error: error.message,
@@ -193,13 +245,20 @@ export class WLEDClient {
  * Manages multiple WLED controllers
  */
 export class ControllerManager {
-  constructor(config) {
+  constructor(config, debug = null) {
     this.config = config;
     this.clients = {};
     
+    // Use environment variable if available, otherwise default to true
+    const debugMode = debug !== null ? debug : (process.env.WLED_DEBUG !== 'false');
+    
     // Initialize clients for each controller
     for (const [key, controller] of Object.entries(config.pumpkin.controllers)) {
-      this.clients[key] = new WLEDClient(controller.ip, controller.name);
+      this.clients[key] = new WLEDClient(controller.ip, controller.name, debugMode);
+    }
+    
+    if (debugMode) {
+      console.log(`[WLED Debug] Enabled for ${Object.keys(this.clients).length} controllers`);
     }
   }
 
@@ -215,7 +274,7 @@ export class ControllerManager {
   }
 
   /**
-   * Set effect/palette for a feature
+   * Set effect/palette for a feature (supports multi-segment features)
    */
   async setFeature(featureName, props) {
     const feature = this.config.pumpkin.features[featureName];
@@ -223,8 +282,59 @@ export class ControllerManager {
       throw new Error(`Feature '${featureName}' not found`);
     }
 
+    // Handle multi-segment features
+    if (feature.multiSegment && feature.targets) {
+      return await this.setMultipleTargets(feature.targets, props);
+    }
+
+    // Handle single segment features
     const client = this.getClient(feature.controller);
     return await client.setSegment(feature.segment, props);
+  }
+
+  /**
+   * Set properties for multiple segments, potentially across different controllers
+   */
+  async setMultipleTargets(targets, props) {
+    // Group targets by controller
+    const byController = {};
+    for (const target of targets) {
+      if (!byController[target.controller]) {
+        byController[target.controller] = [];
+      }
+      byController[target.controller].push({
+        id: target.segment,
+        ...props
+      });
+    }
+
+    // Send requests to each controller
+    const results = {};
+    const errors = [];
+    
+    for (const [controllerKey, segments] of Object.entries(byController)) {
+      const client = this.getClient(controllerKey);
+      const result = await client.setSegments(segments);
+      results[controllerKey] = result;
+      
+      if (!result.success) {
+        errors.push(`${controllerKey}: ${result.error}`);
+      }
+    }
+
+    // Return combined result
+    if (errors.length > 0) {
+      return {
+        success: false,
+        error: errors.join('; '),
+        results
+      };
+    }
+
+    return {
+      success: true,
+      data: results
+    };
   }
 
   /**
