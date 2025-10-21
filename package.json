@@ -1,0 +1,29 @@
+{
+  "name": "pumpkin-painter",
+  "version": "0.1.0",
+  "description": "Interactive Halloween pumpkin LED controller using WLED",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node test/test-wled.js"
+  },
+  "keywords": [
+    "wled",
+    "led",
+    "halloween",
+    "pumpkin",
+    "lighting"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
+

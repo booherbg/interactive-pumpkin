@@ -1,0 +1,124 @@
+/* Mobile-specific styles */
+
+@media (max-width: 768px) {
+  .app-container {
+    padding: var(--spacing-md);
+  }
+
+  .app-header h1 {
+    font-size: 1.8rem;
+  }
+
+  .section {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .section-title {
+    font-size: 1.2rem;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--spacing-sm);
+  }
+
+  .feature-btn {
+    min-height: 90px;
+    padding: var(--spacing-sm);
+  }
+
+  .feature-status {
+    font-size: 1.5rem;
+  }
+
+  .effect-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-sm);
+  }
+
+  .effect-btn {
+    min-height: 80px;
+    padding: var(--spacing-sm);
+  }
+
+  .effect-icon {
+    font-size: 1.5rem;
+  }
+
+  .palette-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--spacing-sm);
+  }
+
+  .palette-btn {
+    min-height: 100px;
+    padding: var(--spacing-sm);
+  }
+
+  .controls-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .toast {
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    left: var(--spacing-md);
+    transform: translateY(200px);
+  }
+
+  .toast.show {
+    transform: translateY(0);
+  }
+}
+
+/* Portrait mode optimization for iPad */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  .feature-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .effect-grid,
+  .palette-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Landscape mode optimization for iPad */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  .feature-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .effect-grid,
+  .palette-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Touch-friendly styles */
+@media (hover: none) and (pointer: coarse) {
+  .feature-btn,
+  .effect-btn,
+  .palette-btn,
+  .power-btn {
+    min-height: 60px;
+    min-width: 60px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .feature-btn:hover,
+  .effect-btn:hover,
+  .palette-btn:hover {
+    transform: none;
+  }
+
+  /* Add active state for touch */
+  .feature-btn:active,
+  .effect-btn:active,
+  .palette-btn:active {
+    transform: scale(0.95);
+  }
+}
+

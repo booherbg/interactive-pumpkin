@@ -1,0 +1,88 @@
+{
+  "name": "Halloween Pumpkin 2025",
+  "controllers": {
+    "pumpkin_12v": {
+      "ip": "10.0.1.100",
+      "name": "12v Controller (Main Pumpkin)",
+      "segments": 8
+    },
+    "pumpkin_24v": {
+      "ip": "10.0.1.101",
+      "name": "24v Controller (Filler)",
+      "segments": 4
+    }
+  },
+  "features": {
+    "leftEye": {
+      "name": "Left Eye",
+      "controller": "pumpkin_12v",
+      "segment": 0,
+      "group": "face",
+      "color": "#FF6600"
+    },
+    "rightEye": {
+      "name": "Right Eye",
+      "controller": "pumpkin_12v",
+      "segment": 1,
+      "group": "face",
+      "color": "#FF6600"
+    },
+    "nose": {
+      "name": "Nose",
+      "controller": "pumpkin_12v",
+      "segment": 2,
+      "group": "face",
+      "color": "#FF8800"
+    },
+    "mouth": {
+      "name": "Mouth",
+      "controller": "pumpkin_12v",
+      "segment": 3,
+      "group": "face",
+      "color": "#FF6600"
+    },
+    "innerShell": {
+      "name": "Inner Shell",
+      "controller": "pumpkin_12v",
+      "segment": 4,
+      "group": "shell",
+      "color": "#FF4400"
+    },
+    "leftOuterShell": {
+      "name": "Left Outer Shell",
+      "controller": "pumpkin_12v",
+      "segment": 5,
+      "group": "shell",
+      "color": "#FF4400"
+    },
+    "rightOuterShell": {
+      "name": "Right Outer Shell",
+      "controller": "pumpkin_12v",
+      "segment": 6,
+      "group": "shell",
+      "color": "#FF4400"
+    },
+    "innerFiller": {
+      "name": "Inner Filler",
+      "controller": "pumpkin_24v",
+      "segment": 0,
+      "group": "background",
+      "color": "#000088"
+    },
+    "mouthFiller": {
+      "name": "Mouth Filler",
+      "controller": "pumpkin_24v",
+      "segment": 1,
+      "group": "background",
+      "color": "#000088"
+    },
+    "skyFiller": {
+      "name": "Sky/Background",
+      "controller": "pumpkin_24v",
+      "segment": 2,
+      "group": "background",
+      "color": "#000044"
+    }
+  }
+}
+

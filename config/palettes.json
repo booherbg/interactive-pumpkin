@@ -1,0 +1,22 @@
+{
+  "_comment": [
+    "WLED Built-in Palettes",
+    "IMPORTANT: Only the 'id' is sent to WLED via API (e.g. {pal: 2})",
+    "The 'colors' arrays are ONLY used for UI preview gradients - they are NOT sent to WLED",
+    "WLED built-in palettes have predefined colors in the firmware",
+    "To set custom colors, you must upload palette0-9.json files directly to WLED controller"
+  ],
+  "palettes": [
+    { "id": 0, "name": "Default", "colors": ["#000000"], "icon": "⚫" },
+    { "id": 1, "name": "Random Cycle", "colors": ["#FF0000", "#00FF00", "#0000FF"], "icon": "🎲" },
+    { "id": 2, "name": "Rainbow", "colors": ["#FF0000", "#FFFF00", "#00FF00", "#0000FF", "#FF00FF"], "icon": "🌈" },
+    { "id": 4, "name": "Party", "colors": ["#FF00FF", "#FFFF00", "#00FFFF"], "icon": "🎉" },
+    { "id": 6, "name": "Lava", "colors": ["#000000", "#8B0000", "#FF4500", "#FF8C00"], "icon": "🌋" },
+    { "id": 7, "name": "Ocean", "colors": ["#000080", "#0000FF", "#00FFFF"], "icon": "🌊" },
+    { "id": 8, "name": "Forest", "colors": ["#006400", "#228B22", "#90EE90"], "icon": "🌲" },
+    { "id": 9, "name": "Halloween", "colors": ["#FF6600", "#9900FF", "#000000"], "icon": "🎃" },
+    { "id": 11, "name": "Sunset", "colors": ["#FF4500", "#FF6347", "#FFD700"], "icon": "🌅" },
+    { "id": 35, "name": "Fire", "colors": ["#000000", "#8B0000", "#FF4500", "#FFFF00"], "icon": "🔥" }
+  ]
+}
+
