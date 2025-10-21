@@ -2,67 +2,122 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🎃 Pumpkin Painter</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <link rel="stylesheet" href="/css/mobile.css">
+  <link rel="stylesheet" href="/css/pumpkin.css">
 </head>
 <body>
-  <div class="app-container">
-    <!-- Header -->
-    <header class="app-header">
+  <div class="container">
+    <header>
       <h1>🎃 Pumpkin Painter</h1>
-      <div class="header-controls">
-        <button id="power-btn" class="power-btn on">🔌 ON</button>
-      </div>
+      <a href="/admin.html" class="admin-link">⚙️</a>
     </header>
 
-    <!-- Main Content -->
-    <main class="app-main">
-      <!-- Feature Selector -->
-      <section class="section">
-        <h2 class="section-title">Select Pumpkin Feature</h2>
-        <div id="feature-selector" class="feature-selector"></div>
-        <div id="selected-feature" class="selected-feature">Select a feature</div>
-      </section>
+    <!-- Shortcut Buttons -->
+    <div class="shortcuts">
+      <button class="shortcut-btn" data-feature="allFace" data-label="Whole Face">✨ Whole Face</button>
+      <button class="shortcut-btn" data-feature="leftEye" data-label="Eyes">👀 Eyes</button>
+      <button class="shortcut-btn" data-feature="nose" data-label="Nose">👃 Nose</button>
+      <button class="shortcut-btn" data-feature="mouth" data-label="Mouth">👄 Mouth</button>
+      <button class="shortcut-btn" data-feature="innerShell" data-label="Inner Shell">💡 Inner</button>
+      <button class="shortcut-btn" data-feature="allShell" data-label="Outer Shell">🔶 Shell</button>
+      <button class="shortcut-btn" data-feature="bothRims" data-label="Outer Space">🌟 Outer</button>
+    </div>
 
-      <!-- Effect Picker -->
-      <section class="section">
-        <h2 class="section-title">Choose Effect</h2>
-        <div id="effect-picker" class="effect-picker"></div>
-      </section>
+    <div class="pumpkin-container">
+      <!-- SVG Pumpkin -->
+      <svg viewBox="0 0 600 600" class="pumpkin-svg">
+        <!-- Left outer shell (rim) - single curve -->
+        <path d="M 70,120 A 240,260 0 0,0 70,520" 
+              class="clickable-area outer-shell-left" data-feature="bothRims" data-label="Outer"
+              fill="none" stroke-linecap="round"/>
 
-      <!-- Palette Picker -->
-      <section class="section">
-        <h2 class="section-title">Choose Palette</h2>
-        <div id="palette-picker" class="palette-picker"></div>
-      </section>
+        <!-- Right outer shell (rim) - single curve -->
+        <path d="M 530,120 A 240,260 0 0,1 530,520" 
+              class="clickable-area outer-shell-right" data-feature="bothRims" data-label="Outer"
+              fill="none" stroke-linecap="round"/>
 
-      <!-- Controls -->
-      <section class="section controls-section">
-        <div class="controls-grid">
-          <div id="speed-control" class="control-item"></div>
-          <div id="intensity-control" class="control-item"></div>
+        <!-- Inner fill (light orange interior) -->
+        <ellipse cx="300" cy="320" rx="190" ry="210" 
+                 class="clickable-area inner-fill" data-feature="innerShell" data-label="Inner Shell"/>
+
+        <!-- Pumpkin shell (outline only) -->
+        <ellipse cx="300" cy="320" rx="200" ry="220" 
+                 class="clickable-area pumpkin-shell" data-feature="allShell" data-label="Shell"/>
+
+        <!-- Left Eye (solid, 20% bigger) -->
+        <polygon points="216,232 264,232 254,288 226,288" 
+                 class="clickable-area feature-cutout" data-feature="leftEye" data-label="Left Eye"/>
+
+        <!-- Right Eye (solid, 20% bigger) -->
+        <polygon points="336,232 384,232 374,288 346,288" 
+                 class="clickable-area feature-cutout" data-feature="rightEye" data-label="Right Eye"/>
+
+        <!-- Nose (solid, 20% bigger) -->
+        <polygon points="300,294 324,336 276,336" 
+                 class="clickable-area feature-cutout" data-feature="nose" data-label="Nose"/>
+
+        <!-- Mouth (solid) -->
+        <path d="M 200,380 Q 300,420 400,380 L 390,400 Q 300,440 210,400 Z" 
+              class="clickable-area feature-cutout" data-feature="mouth" data-label="Mouth"/>
+
+        <!-- Hover labels -->
+        <text class="hover-label" id="hoverLabel" x="300" y="550" text-anchor="middle"></text>
+      </svg>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="controlModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modalTitle">Select Effect</h2>
+          <button class="close-btn" id="closeModal">×</button>
         </div>
-      </section>
 
-      <!-- Brightness Control -->
-      <section class="section">
-        <h2 class="section-title">💡 Brightness</h2>
-        <div id="brightness-control" class="brightness-control"></div>
-      </section>
-    </main>
+        <div class="modal-body">
+          <section class="modal-section">
+            <h3>Effect</h3>
+            <div class="effect-grid" id="effectGrid"></div>
+          </section>
 
-    <!-- Footer -->
-    <footer class="app-footer">
-      <p>Happy Halloween! 🎃</p>
-    </footer>
+          <section class="modal-section">
+            <h3>Color Palette</h3>
+            <div class="palette-grid" id="paletteGrid"></div>
+          </section>
+
+          <div class="controls-section">
+            <div class="slider-group">
+              <label>
+                <span>Speed</span>
+                <span class="slider-value" id="speedValue">128</span>
+              </label>
+              <input type="range" id="speedSlider" min="0" max="255" value="128" class="slider">
+            </div>
+
+            <div class="slider-group">
+              <label>
+                <span>Intensity</span>
+                <span class="slider-value" id="intensityValue">128</span>
+              </label>
+              <input type="range" id="intensitySlider" min="0" max="255" value="128" class="slider">
+            </div>
+          </div>
+
+          <button class="apply-btn" id="applyBtn">Apply</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toastContainer"></div>
+
+    <!-- Reset Button -->
+    <button class="reset-btn" id="resetBtn" title="Reset to Preset 1">
+      🔄 Reset
+    </button>
   </div>
 
-  <!-- Scripts -->
-  <script type="module" src="/js/app.js"></script>
+  <script type="module" src="/js/pumpkin.js"></script>
 </body>
 </html>
 

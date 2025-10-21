@@ -1,17 +1,25 @@
 # 🎃 Pumpkin Painter
 
-An interactive web application for controlling a Halloween pumpkin LED installation using WLED controllers. Control effects, palettes, and colors from your iPad!
+An interactive web application for controlling a Halloween pumpkin LED installation using WLED controllers. Features both a user-friendly visual interface and an advanced admin panel!
 
 ## Features
 
-- 🎨 **Visual Feature Selection** - Select different parts of your pumpkin (eyes, nose, mouth, shell, fillers, rims)
+### User Interface (Main Page)
+- 🎃 **Visual Pumpkin Interface** - Tap on eyes, nose, mouth, shell outline, or inner fill
+- 🎯 **Simple Modal Controls** - Easy effect and palette selection
+- ✨ **Quick Actions** - "Whole Face" shortcut button
+- 📱 **iPad Optimized** - Single-screen, touch-friendly design
+- 🌈 **Beautiful SVG Design** - Jack-o-lantern with thick dark orange outline and light orange interior
+
+### Admin Panel (`/admin.html`)
+- 🎨 **Advanced Feature Selection** - Individual control of all segments
 - 🔗 **Multi-Segment Control** - Control multiple segments at once (e.g., "Both Rims", "All Face")
 - ✨ **WLED Effects** - Choose from 11+ built-in WLED effects (Fire, Rainbow, Sparkle, etc.)
 - 🌈 **Color Palettes** - Apply themed palettes (Halloween, Fire, Ocean, Party, etc.)
 - ⚡ **Real-time Control** - Changes appear instantly on the physical LEDs
-- 📱 **iPad Optimized** - Touch-friendly interface designed for iPad
 - 💾 **State Persistence** - Remembers your settings across sessions
 - 🔌 **Power & Brightness** - Global controls for all controllers
+- 🎛️ **Fine-tuning** - Precise speed and intensity controls
 
 ## Quick Start
 
@@ -91,11 +99,55 @@ Open your iPad's browser and navigate to:
 http://<raspberry-pi-ip>:3000
 ```
 
+You'll see the **user-friendly pumpkin interface**. For advanced controls, visit:
+```
+http://<raspberry-pi-ip>:3000/admin.html
+```
+
 ## Usage
 
-### Basic Workflow
+### Choosing an Interface
 
-1. **Select a Feature** - Tap on a pumpkin feature (e.g., Left Eye)
+**User Interface** (`/`) - Perfect for:
+- 👥 General users and guests
+- 🎨 Quick, intuitive control
+- 📱 Simple touch interface
+- 🎃 Visual, fun experience
+
+**Admin Panel** (`/admin.html`) - Best for:
+- 🔧 Setup and configuration
+- 🎛️ Fine-tuned control
+- 📊 Multi-segment features
+- ⚙️ System management (power, brightness)
+
+You can switch between them at any time - there's an ⚙️ icon in the user interface to jump to admin.
+
+### User Interface (Recommended for most users)
+
+**Two ways to control:**
+
+**Option 1: Shortcut Buttons** (top of page)
+- ✨ Whole Face | 👀 Eyes | 👃 Nose | 👄 Mouth | 💡 Inner | 🔶 Shell | 🌟 Outer
+- Tap any button to quickly control that feature
+
+**Option 2: Visual Pumpkin** (tap directly)
+1. **Tap a pumpkin area** - Eyes, nose, mouth, thick dark orange outline (shell), or light orange interior
+2. **Select effect and palette** - Choose from the modal that appears
+3. **Adjust speed/intensity** - Use the sliders (optional)
+4. **Apply** - Tap the Apply button
+
+**Reset Button** (bottom right):
+- 🔄 **Reset** - Loads preset 1 on both controllers to restore default state
+
+**Visual Design:**
+- Black cutouts = Eyes, nose, mouth (solid, no LEDs inside)
+- Dark orange thick outline = Outer shell (main pumpkin outline)
+- Light orange fill = Inner shell (LED area inside the pumpkin)
+- Gray curved lines (left/right) = Outer rims (parallel to pumpkin shell)
+
+### Admin Panel (Advanced users)
+
+1. **Select a Feature** - Tap on a feature button (e.g., Left Eye)
 2. **Choose an Effect** - Tap an effect icon (e.g., 🔥 Fire)
 3. **Choose a Palette** - Tap a palette (e.g., 🎃 Halloween)
 4. **Adjust Settings** - Use sliders to adjust speed and intensity
@@ -135,17 +187,27 @@ http://<raspberry-pi-ip>:3000
 pumpkin-painter/
 ├── config/
 │   ├── pumpkin.json          # Feature mapping (edit this!)
-│   ├── effects.json          # WLED effect definitions
-│   └── palettes.json         # WLED palette definitions
+│   ├── effects.json          # WLED effect definitions (UI subset)
+│   ├── effects-reference.json # Complete WLED effects reference (170+ effects)
+│   ├── palettes.json         # WLED palette definitions (UI subset)
+│   └── palettes-reference.json # Complete WLED palettes reference (70+ palettes)
 ├── src/
 │   ├── server.js             # Express server
 │   ├── wled-client.js        # WLED API client
 │   ├── config-loader.js      # Configuration loader
 │   └── api-routes.js         # API endpoints
 ├── public/
-│   ├── index.html            # Main UI
-│   ├── css/                  # Stylesheets
-│   └── js/                   # Client-side JavaScript
+│   ├── index.html            # User-friendly pumpkin interface
+│   ├── admin.html            # Advanced admin panel
+│   ├── css/
+│   │   ├── pumpkin.css       # User interface styles
+│   │   ├── style.css         # Admin panel styles
+│   │   └── mobile.css        # Mobile optimizations
+│   └── js/
+│       ├── pumpkin.js        # User interface logic
+│       ├── app.js            # Admin panel logic
+│       ├── api.js            # API client
+│       └── ui-components.js  # UI components
 ├── test/
 │   └── test-wled.js          # Connectivity tests
 ├── ARCHITECTURE.md           # Technical architecture
@@ -195,6 +257,14 @@ Get current state of all controllers
 ### GET `/api/ping`
 Test connectivity to all controllers
 
+### POST `/api/preset`
+Load a preset on all controllers
+```json
+{
+  "preset": 1  // Preset number (1-16)
+}
+```
+
 ## Troubleshooting
 
 ### Controllers showing as offline
@@ -222,11 +292,19 @@ Test connectivity to all controllers
 
 ### Adding More Effects
 
-Edit `config/effects.json` to add more effects. Find effect IDs in WLED documentation or by inspecting the `/json/effects` endpoint on your WLED controller.
+Edit `config/effects.json` to add more effects to the UI. 
+
+**Reference:** See `config/effects-reference.json` for the complete list of 170+ WLED effects with IDs. This file contains all available effects from WLED firmware including:
+- Basic effects (Solid, Blink, Breathe, etc.)
+- Animation effects (Rainbow, Fire, Meteor, etc.)
+- Advanced effects (Pacifica, DNA Spiral, Black Hole, etc.)
+- Audio-reactive effects (GEQ, Freqwave, Waterfall, etc.)
 
 ### Adding More Palettes
 
-Edit `config/palettes.json` to add custom palettes. Include color previews for better visual feedback.
+Edit `config/palettes.json` to add more palettes to the UI.
+
+**Reference:** See `config/palettes-reference.json` for the complete list of 70+ WLED palettes with IDs. This file contains all available palettes from WLED firmware including themed palettes like Fire, Ocean, Forest, Party, Sunset, and many more.
 
 ### Changing Feature Mapping
 

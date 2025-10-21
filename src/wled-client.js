@@ -214,6 +214,38 @@ export class WLEDClient {
   }
 
   /**
+   * Load a preset (1-16)
+   */
+  async loadPreset(presetId) {
+    const payload = { ps: presetId };
+    
+    // Log before sending (so it logs even if controller is offline)
+    this.log('→ POST /json/state (preset)', JSON.stringify(payload));
+    
+    try {
+      const response = await axios.post(
+        `${this.baseUrl}/json/state`,
+        payload,
+        { timeout: this.timeout }
+      );
+      
+      this.log('✓ Response:', response.status, 'OK');
+      
+      return { success: true, data: response.data };
+    } catch (error) {
+      // Log error details
+      this.log('✗ Error:', error.message);
+      console.error(`Error loading preset ${presetId} on ${this.name}:`, error.message);
+      
+      return { 
+        success: false, 
+        error: error.message,
+        controller: this.name
+      };
+    }
+  }
+
+  /**
    * Test connectivity to the controller
    */
   async ping() {
@@ -385,6 +417,19 @@ export class ControllerManager {
     
     for (const [key, client] of Object.entries(this.clients)) {
       results[key] = await client.ping();
+    }
+    
+    return results;
+  }
+
+  /**
+   * Load preset on all controllers
+   */
+  async loadPresetAll(presetId) {
+    const results = {};
+    
+    for (const [key, client] of Object.entries(this.clients)) {
+      results[key] = await client.loadPreset(presetId);
     }
     
     return results;

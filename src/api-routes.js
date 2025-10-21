@@ -211,6 +211,33 @@ export function setupRoutes(app, config, controllerManager) {
     }
   });
 
+  /**
+   * POST /api/preset
+   * Load a preset on all controllers
+   */
+  router.post('/preset', async (req, res) => {
+    try {
+      const { preset } = req.body;
+      
+      if (preset === undefined || preset < 1 || preset > 16) {
+        return res.status(400).json({ 
+          success: false,
+          error: 'Invalid preset',
+          message: 'Preset must be between 1 and 16'
+        });
+      }
+      
+      const results = await controllerManager.loadPresetAll(preset);
+      res.json({ success: true, preset, results });
+    } catch (error) {
+      console.error('Error in POST /api/preset:', error);
+      res.status(500).json({ 
+        success: false, 
+        error: error.message 
+      });
+    }
+  });
+
   // Mount the router under /api
   app.use('/api', router);
 }
