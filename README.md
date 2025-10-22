@@ -7,19 +7,20 @@ An interactive web application for controlling a Halloween pumpkin LED installat
 ### User Interface (Main Page)
 - 🎃 **Visual Pumpkin Interface** - Tap on eyes, nose, mouth, shell outline, or inner fill
 - 🎯 **Simple Modal Controls** - Easy effect and palette selection
-- ✨ **Quick Actions** - "Whole Face" shortcut button
+- ✨ **Quick Actions** - "Whole Pumpkin" and "Whole Face" shortcut buttons
 - 📱 **iPad Optimized** - Single-screen, touch-friendly design
 - 🌈 **Beautiful SVG Design** - Jack-o-lantern with thick dark orange outline and light orange interior
 
 ### Admin Panel (`/admin.html`)
 - 🎨 **Advanced Feature Selection** - Individual control of all segments
 - 🔗 **Multi-Segment Control** - Control multiple segments at once (e.g., "Both Rims", "All Face")
-- ✨ **WLED Effects** - Choose from 11+ built-in WLED effects (Fire, Rainbow, Sparkle, etc.)
-- 🌈 **Color Palettes** - Apply themed palettes (Halloween, Fire, Ocean, Party, etc.)
+- ✨ **WLED Effects** - Choose from 30+ built-in WLED effects (Fire, Rainbow, Sparkle, etc.)
+- 🌈 **Color Palettes** - Apply themed palettes from 31 options (Halloween, Fire, Ocean, Party, etc.)
 - ⚡ **Real-time Control** - Changes appear instantly on the physical LEDs
 - 💾 **State Persistence** - Remembers your settings across sessions
 - 🔌 **Power & Brightness** - Global controls for all controllers
 - 🎛️ **Fine-tuning** - Precise speed and intensity controls
+- 🖥️ **Controller Status** - View controller info, presets, and device details
 
 ## Quick Start
 
@@ -127,8 +128,9 @@ You can switch between them at any time - there's an ⚙️ icon in the user int
 **Two ways to control:**
 
 **Option 1: Shortcut Buttons** (top of page)
-- ✨ Whole Face | 👀 Eyes | 👃 Nose | 👄 Mouth | 💡 Inner | 🔶 Shell | 🌟 Outer
+- 🎃 **Whole Pumpkin** (applies to ALL segments) | ✨ Whole Face | 👀 Eyes | 👃 Nose | 👄 Mouth | 💡 Inner | 🔶 Shell | 🌟 Outer
 - Tap any button to quickly control that feature
+- The **Whole Pumpkin** button is highlighted and controls every LED segment across all controllers
 
 **Option 2: Visual Pumpkin** (tap directly)
 1. **Tap a pumpkin area** - Eyes, nose, mouth, thick dark orange outline (shell), or light orange interior
@@ -152,6 +154,26 @@ You can switch between them at any time - there's an ⚙️ icon in the user int
 3. **Choose a Palette** - Tap a palette (e.g., 🎃 Halloween)
 4. **Adjust Settings** - Use sliders to adjust speed and intensity
 5. **Repeat** - Select different features and apply different effects
+
+### Controller Status
+
+At the bottom of the admin panel, you'll find the **Controllers** section:
+
+**What you'll see:**
+- 🟢 **Online/Offline Status** - Real-time connection status for each controller
+- 📡 **IP Address** - Network address of the controller
+- 🎛️ **Segment Count** - Number of configured segments
+
+**View Details:**
+1. Click **"View Details"** on any controller card
+2. See current state (power, brightness, transition time)
+3. View all configured **presets** with their names
+4. Check device info (version, LED count, WiFi strength)
+
+This is useful for:
+- 🔍 Verifying which presets are available
+- 🛠️ Troubleshooting connection issues
+- 📊 Monitoring controller health
 
 ### Available Effects
 
@@ -257,6 +279,40 @@ Get current state of all controllers
 ### GET `/api/ping`
 Test connectivity to all controllers
 
+### GET `/api/controller/:controllerKey`
+Get detailed information about a specific controller
+- Returns: controller state, info, presets, device details
+
+**Example response:**
+```json
+{
+  "controllerKey": "pumpkin_12v",
+  "name": "12v Controller (Main Pumpkin)",
+  "ip": "10.0.1.100",
+  "state": {
+    "success": true,
+    "data": {
+      "on": true,
+      "bri": 255,
+      "transition": 7,
+      "seg": [...]
+    }
+  },
+  "info": {
+    "success": true,
+    "data": {
+      "ver": "0.14.1",
+      "leds": { "count": 300, "seglc": 16 },
+      "wifi": { "rssi": -45 },
+      "presets": [
+        { "n": "Default", "ql": "1" },
+        { "n": "Rainbow Party" }
+      ]
+    }
+  }
+}
+```
+
 ### POST `/api/preset`
 Load a preset on all controllers
 ```json
@@ -314,6 +370,31 @@ Edit `config/pumpkin.json` to remap features to different segments or controller
 
 You can create features that control multiple segments at once (even across different controllers):
 
+**Example 1: Control all segments everywhere (Whole Pumpkin)**
+```json
+{
+  "wholePumpkin": {
+    "name": "Whole Pumpkin 🎃",
+    "group": "all",
+    "multiSegment": true,
+    "targets": [
+      { "controller": "pumpkin_12v", "segment": 0 },
+      { "controller": "pumpkin_12v", "segment": 1 },
+      { "controller": "pumpkin_12v", "segment": 2 },
+      { "controller": "pumpkin_12v", "segment": 3 },
+      { "controller": "pumpkin_12v", "segment": 4 },
+      { "controller": "pumpkin_12v", "segment": 5 },
+      { "controller": "pumpkin_12v", "segment": 6 },
+      { "controller": "pumpkin_24v", "segment": 0 },
+      { "controller": "pumpkin_24v", "segment": 1 },
+      { "controller": "pumpkin_24v", "segment": 2 }
+    ],
+    "color": "#FF6600"
+  }
+}
+```
+
+**Example 2: Control specific segments**
 ```json
 {
   "bothRims": {
@@ -335,6 +416,7 @@ Multi-segment features:
 - Work across different controllers automatically
 - Display with a dashed border in the UI (marked with 🔗)
 - Use WLED's native multi-segment API for efficiency
+- Perfect for synchronized effects across the entire display
 
 ### Creating Multiple Configurations
 

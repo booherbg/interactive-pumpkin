@@ -74,6 +74,9 @@ class PumpkinPainter {
     
     // Build controls
     this.buildControls();
+    
+    // Build controller list
+    this.buildControllerList();
   }
 
   /**
@@ -208,6 +211,156 @@ class PumpkinPainter {
         debounce((value) => this.setBrightness(value), 300)
       );
       brightnessContainer.appendChild(brightnessSlider);
+    }
+  }
+
+  /**
+   * Build controller list
+   */
+  buildControllerList() {
+    const container = document.getElementById('controller-list');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    // Create controller cards
+    for (const [key, controller] of Object.entries(this.config.controllers)) {
+      const card = document.createElement('div');
+      card.className = 'controller-card';
+      card.innerHTML = `
+        <div class="controller-header">
+          <h3 class="controller-name">${controller.name}</h3>
+          <span class="controller-status">⚫ Checking...</span>
+        </div>
+        <div class="controller-info">
+          <div><strong>IP:</strong> ${controller.ip}</div>
+          <div><strong>Segments:</strong> ${controller.segments}</div>
+        </div>
+        <button class="controller-details-btn" data-controller="${key}">
+          View Details
+        </button>
+        <div class="controller-details" id="details-${key}" style="display: none;"></div>
+      `;
+
+      // Add event listener for details button
+      const detailsBtn = card.querySelector('.controller-details-btn');
+      detailsBtn.addEventListener('click', () => this.toggleControllerDetails(key));
+
+      container.appendChild(card);
+    }
+
+    // Check controller status
+    this.checkControllerStatus();
+  }
+
+  /**
+   * Check status of all controllers
+   */
+  async checkControllerStatus() {
+    try {
+      const results = await api.ping();
+      
+      for (const [key, result] of Object.entries(results)) {
+        const statusEl = document.querySelector(
+          `.controller-card:has([data-controller="${key}"]) .controller-status`
+        );
+        
+        if (statusEl) {
+          if (result.success) {
+            statusEl.textContent = '🟢 Online';
+            statusEl.style.color = '#4ade80';
+          } else {
+            statusEl.textContent = '🔴 Offline';
+            statusEl.style.color = '#f87171';
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking controller status:', error);
+    }
+  }
+
+  /**
+   * Toggle controller details panel
+   */
+  async toggleControllerDetails(controllerKey) {
+    const detailsEl = document.getElementById(`details-${controllerKey}`);
+    const btn = document.querySelector(`[data-controller="${controllerKey}"]`);
+    
+    if (!detailsEl || !btn) return;
+
+    if (detailsEl.style.display === 'none') {
+      // Show and load details
+      btn.textContent = 'Loading...';
+      btn.disabled = true;
+
+      try {
+        const data = await api.getControllerDetails(controllerKey);
+        
+        if (data.state.success && data.info.success) {
+          const state = data.state.data;
+          const info = data.info.data;
+          
+          detailsEl.innerHTML = `
+            <div class="controller-detail-section">
+              <h4>Current State</h4>
+              <div class="detail-grid">
+                <div><strong>Power:</strong> ${state.on ? '🟢 ON' : '🔴 OFF'}</div>
+                <div><strong>Brightness:</strong> ${state.bri}/255</div>
+                <div><strong>Transition:</strong> ${state.transition}ms</div>
+              </div>
+            </div>
+            
+            <div class="controller-detail-section">
+              <h4>Presets</h4>
+              <div class="preset-list">
+                ${info.presets ? info.presets.map((preset, idx) => 
+                  `<div class="preset-item">
+                    <strong>${idx + 1}.</strong> ${preset.n || `Preset ${idx + 1}`}
+                    ${preset.ql ? `<span class="preset-quickload">Quick Load: ${preset.ql}</span>` : ''}
+                  </div>`
+                ).join('') : '<div>No presets configured</div>'}
+              </div>
+            </div>
+            
+            <div class="controller-detail-section">
+              <h4>Device Info</h4>
+              <div class="detail-grid">
+                <div><strong>Version:</strong> ${info.ver || 'Unknown'}</div>
+                <div><strong>LED Count:</strong> ${info.leds?.count || 0}</div>
+                <div><strong>Max Segments:</strong> ${info.leds?.seglc || 0}</div>
+                <div><strong>WiFi RSSI:</strong> ${info.wifi?.rssi || 'N/A'} dBm</div>
+              </div>
+            </div>
+          `;
+          
+          detailsEl.style.display = 'block';
+          btn.textContent = 'Hide Details';
+        } else {
+          detailsEl.innerHTML = `
+            <div class="error-message">
+              Failed to load controller details. Controller may be offline.
+            </div>
+          `;
+          detailsEl.style.display = 'block';
+          btn.textContent = 'Retry';
+        }
+      } catch (error) {
+        console.error('Error loading controller details:', error);
+        detailsEl.innerHTML = `
+          <div class="error-message">
+            Error: ${error.message}
+          </div>
+        `;
+        detailsEl.style.display = 'block';
+        btn.textContent = 'Retry';
+      }
+      
+      btn.disabled = false;
+    } else {
+      // Hide details
+      detailsEl.style.display = 'none';
+      btn.textContent = 'View Details';
     }
   }
 

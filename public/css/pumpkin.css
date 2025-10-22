@@ -98,6 +98,38 @@ header h1 {
   opacity: 0.8;
 }
 
+/* Whole Pumpkin Button - Special Styling */
+.shortcut-btn.whole-pumpkin {
+  background: linear-gradient(135deg, var(--color-primary), #ffaa00);
+  border-color: var(--color-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(255, 102, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.shortcut-btn.whole-pumpkin::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.shortcut-btn.whole-pumpkin:hover {
+  background: linear-gradient(135deg, #ff8833, #ffcc00);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(255, 102, 0, 0.5);
+}
+
+.shortcut-btn.whole-pumpkin:hover::before {
+  left: 100%;
+}
+
 /* Pumpkin Container */
 .pumpkin-container {
   flex: 1;

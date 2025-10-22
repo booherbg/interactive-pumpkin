@@ -122,5 +122,17 @@ export const api = {
     }
     return await response.json();
   },
+
+  /**
+   * Get detailed controller information
+   * @param {string} controllerKey - Controller key from config
+   */
+  async getControllerDetails(controllerKey) {
+    const response = await fetch(`${API_BASE}/api/controller/${controllerKey}`);
+    if (!response.ok) {
+      throw new Error('Failed to get controller details');
+    }
+    return await response.json();
+  },
 };
 

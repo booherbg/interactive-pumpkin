@@ -141,6 +141,44 @@ export function setupRoutes(app, config, controllerManager) {
   });
 
   /**
+   * GET /api/controller/:controllerKey
+   * Get detailed state and info for a specific controller
+   */
+  router.get('/controller/:controllerKey', async (req, res) => {
+    try {
+      const { controllerKey } = req.params;
+      const client = controllerManager.clients[controllerKey];
+      
+      if (!client) {
+        return res.status(404).json({
+          success: false,
+          error: `Controller '${controllerKey}' not found`
+        });
+      }
+
+      // Fetch both state and info in parallel
+      const [stateResult, infoResult] = await Promise.all([
+        client.getState(),
+        client.getInfo()
+      ]);
+
+      res.json({
+        controllerKey,
+        name: client.name,
+        ip: client.baseUrl.replace('http://', ''),
+        state: stateResult,
+        info: infoResult
+      });
+    } catch (error) {
+      console.error('Error in GET /api/controller/:controllerKey:', error);
+      res.status(500).json({
+        success: false,
+        error: error.message
+      });
+    }
+  });
+
+  /**
    * POST /api/power
    * Turn all controllers on/off
    * Body: { on: true }

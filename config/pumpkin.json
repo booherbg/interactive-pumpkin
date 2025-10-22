@@ -16,76 +16,93 @@
     "leftEye": {
       "name": "Left Eye",
       "controller": "pumpkin_12v",
-      "segment": 0,
+      "segment": 2,
       "group": "face",
       "color": "#FF6600"
     },
     "rightEye": {
       "name": "Right Eye",
       "controller": "pumpkin_12v",
-      "segment": 1,
+      "segment": 3,
       "group": "face",
       "color": "#FF6600"
     },
     "nose": {
       "name": "Nose",
       "controller": "pumpkin_12v",
-      "segment": 2,
+      "segment": 4,
       "group": "face",
       "color": "#FF8800"
     },
-    "mouth": {
-      "name": "Mouth",
+    "mouthTop": {
+      "name": "Mouth Top",
       "controller": "pumpkin_12v",
-      "segment": 3,
+      "segment": 5,
       "group": "face",
       "color": "#FF6600"
     },
-    "innerShell": {
-      "name": "Inner Shell",
-      "controller": "pumpkin_12v",
-      "segment": 4,
-      "group": "shell",
-      "color": "#FF4400"
-    },
-    "leftOuterShell": {
-      "name": "Left Outer Shell",
-      "controller": "pumpkin_12v",
-      "segment": 5,
-      "group": "shell",
-      "color": "#FF4400"
-    },
-    "rightOuterShell": {
-      "name": "Right Outer Shell",
+    "mouthBottom": {
+      "name": "Mouth Bottom",
       "controller": "pumpkin_12v",
       "segment": 6,
+      "group": "face",
+      "color": "#FF6600"
+    },
+    "pumpkinShell": {
+      "name": "Pumpkin Shell",
+      "controller": "pumpkin_12v",
+      "segment": 7,
       "group": "shell",
       "color": "#FF4400"
     },
     "innerFiller": {
       "name": "Inner Filler",
       "controller": "pumpkin_24v",
-      "segment": 0,
+      "segment": 2,
       "group": "background",
       "color": "#000088"
     },
     "mouthFiller": {
       "name": "Mouth Filler",
       "controller": "pumpkin_24v",
-      "segment": 1,
+      "segment": 3,
       "group": "background",
       "color": "#000088"
     },
     "skyFiller": {
       "name": "Sky/Background",
       "controller": "pumpkin_24v",
-      "segment": 2,
+      "segment": 4,
       "group": "background",
       "color": "#000044"
     },
-    "bothRims": {
-      "name": "Outer Shell 🔗",
+    "leftRim": {
+      "name": "Left Outer Rim",
+      "controller": "pumpkin_12v",
+      "segment": 0,
       "group": "rim",
+      "color": "#FF6600"
+    },
+    "rightRim": {
+      "name": "Right Outer Rim",
+      "controller": "pumpkin_12v",
+      "segment": 1,
+      "group": "rim",
+      "color": "#FF6600"
+    },
+    "bothRims": {
+      "name": "Both Outer Rims 🔗",
+      "group": "rim",
+      "multiSegment": true,
+      "targets": [
+        { "controller": "pumpkin_12v", "segment": 0 },
+        { "controller": "pumpkin_12v", "segment": 1 }
+      ],
+      "color": "#FF6600"
+    },
+    "allMouth": {
+      "name": "Whole Mouth",
+      "group": "mouth",
       "multiSegment": true,
       "targets": [
         { "controller": "pumpkin_12v", "segment": 5 },
@@ -98,23 +115,33 @@
       "group": "face",
       "multiSegment": true,
       "targets": [
-        { "controller": "pumpkin_12v", "segment": 0 },
-        { "controller": "pumpkin_12v", "segment": 1 },
         { "controller": "pumpkin_12v", "segment": 2 },
-        { "controller": "pumpkin_12v", "segment": 3 }
-      ],
-      "color": "#FF6600"
-    },
-    "allShell": {
-      "name": "All Shell 🔗",
-      "group": "shell",
-      "multiSegment": true,
-      "targets": [
+        { "controller": "pumpkin_12v", "segment": 3 },
         { "controller": "pumpkin_12v", "segment": 4 },
         { "controller": "pumpkin_12v", "segment": 5 },
         { "controller": "pumpkin_12v", "segment": 6 }
       ],
-      "color": "#FF4400"
+      "color": "#FF6600"
+    },
+    "wholePumpkin": {
+      "name": "Whole Pumpkin 🎃",
+      "group": "all",
+      "multiSegment": true,
+      "targets": [
+        { "controller": "pumpkin_12v", "segment": 0 },
+        { "controller": "pumpkin_12v", "segment": 1 },
+        { "controller": "pumpkin_12v", "segment": 2 },
+        { "controller": "pumpkin_12v", "segment": 3 },
+        { "controller": "pumpkin_12v", "segment": 4 },
+        { "controller": "pumpkin_12v", "segment": 5 },
+        { "controller": "pumpkin_12v", "segment": 6 },
+        { "controller": "pumpkin_12v", "segment": 7 },
+        { "controller": "pumpkin_24v", "segment": 0 },
+        { "controller": "pumpkin_24v", "segment": 1 },
+        { "controller": "pumpkin_24v", "segment": 2 },
+        { "controller": "pumpkin_24v", "segment": 3 }
+      ],
+      "color": "#FF6600"
     }
   }
 }

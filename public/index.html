@@ -15,12 +15,13 @@
 
     <!-- Shortcut Buttons -->
     <div class="shortcuts">
+      <button class="shortcut-btn whole-pumpkin" data-feature="wholePumpkin" data-label="Whole Pumpkin">🎃 Whole Pumpkin</button>
       <button class="shortcut-btn" data-feature="allFace" data-label="Whole Face">✨ Whole Face</button>
       <button class="shortcut-btn" data-feature="leftEye" data-label="Eyes">👀 Eyes</button>
       <button class="shortcut-btn" data-feature="nose" data-label="Nose">👃 Nose</button>
-      <button class="shortcut-btn" data-feature="mouth" data-label="Mouth">👄 Mouth</button>
-      <button class="shortcut-btn" data-feature="innerShell" data-label="Inner Shell">💡 Inner</button>
-      <button class="shortcut-btn" data-feature="allShell" data-label="Outer Shell">🔶 Shell</button>
+      <button class="shortcut-btn" data-feature="allMouth" data-label="Mouth">👄 Mouth</button>
+      <button class="shortcut-btn" data-feature="innerFiller" data-label="Inner Fill">💡 Inner</button>
+      <button class="shortcut-btn" data-feature="pumpkinShell" data-label="Shell">🔶 Shell</button>
       <button class="shortcut-btn" data-feature="bothRims" data-label="Outer Space">🌟 Outer</button>
     </div>
 
@@ -29,21 +30,21 @@
       <svg viewBox="0 0 600 600" class="pumpkin-svg">
         <!-- Left outer shell (rim) - single curve -->
         <path d="M 70,120 A 240,260 0 0,0 70,520" 
-              class="clickable-area outer-shell-left" data-feature="bothRims" data-label="Outer"
+              class="clickable-area outer-shell-left" data-feature="leftRim" data-label="Left Rim"
               fill="none" stroke-linecap="round"/>
 
         <!-- Right outer shell (rim) - single curve -->
         <path d="M 530,120 A 240,260 0 0,1 530,520" 
-              class="clickable-area outer-shell-right" data-feature="bothRims" data-label="Outer"
+              class="clickable-area outer-shell-right" data-feature="rightRim" data-label="Right Rim"
               fill="none" stroke-linecap="round"/>
 
         <!-- Inner fill (light orange interior) -->
         <ellipse cx="300" cy="320" rx="190" ry="210" 
-                 class="clickable-area inner-fill" data-feature="innerShell" data-label="Inner Shell"/>
+                 class="clickable-area inner-fill" data-feature="innerFiller" data-label="Inner Fill"/>
 
         <!-- Pumpkin shell (outline only) -->
         <ellipse cx="300" cy="320" rx="200" ry="220" 
-                 class="clickable-area pumpkin-shell" data-feature="allShell" data-label="Shell"/>
+                 class="clickable-area pumpkin-shell" data-feature="pumpkinShell" data-label="Shell"/>
 
         <!-- Left Eye (solid, 20% bigger) -->
         <polygon points="216,232 264,232 254,288 226,288" 
@@ -59,7 +60,7 @@
 
         <!-- Mouth (solid) -->
         <path d="M 200,380 Q 300,420 400,380 L 390,400 Q 300,440 210,400 Z" 
-              class="clickable-area feature-cutout" data-feature="mouth" data-label="Mouth"/>
+              class="clickable-area feature-cutout" data-feature="allMouth" data-label="Mouth"/>
 
         <!-- Hover labels -->
         <text class="hover-label" id="hoverLabel" x="300" y="550" text-anchor="middle"></text>
