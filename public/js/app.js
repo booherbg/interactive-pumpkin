@@ -139,7 +139,10 @@ class PumpkinPainter {
     const grid = document.createElement('div');
     grid.className = 'effect-grid';
     
-    for (const effect of this.config.effects.effects) {
+    // Filter effects where show is not false (default to true if not specified)
+    const visibleEffects = this.config.effects.effects.filter(effect => effect.show !== false);
+    
+    for (const effect of visibleEffects) {
       const button = createEffectButton(effect);
       button.addEventListener('click', () => this.selectEffect(effect.id));
       grid.appendChild(button);
@@ -158,7 +161,10 @@ class PumpkinPainter {
     const grid = document.createElement('div');
     grid.className = 'palette-grid';
     
-    for (const palette of this.config.palettes.palettes) {
+    // Filter palettes where show is not false (default to true if not specified)
+    const visiblePalettes = this.config.palettes.palettes.filter(palette => palette.show !== false);
+    
+    for (const palette of visiblePalettes) {
       const button = createPaletteButton(palette);
       button.addEventListener('click', () => this.selectPalette(palette.id));
       grid.appendChild(button);

@@ -363,11 +363,23 @@ Edit `config/effects.json` to add more effects to the UI.
 - Advanced effects (Pacifica, DNA Spiral, Black Hole, etc.)
 - Audio-reactive effects (GEQ, Freqwave, Waterfall, etc.)
 
+**Hiding Effects:** Set `"show": false` on any effect to hide it from the UI without losing the configuration. This is useful for keeping a curated selection while maintaining the full list for later use.
+
+```json
+{ "id": 87, "name": "Glitter", "category": "sparkle", "icon": "✨", "show": false }
+```
+
 ### Adding More Palettes
 
 Edit `config/palettes.json` to add more palettes to the UI.
 
 **Reference:** See `config/palettes-reference.json` for the complete list of 70+ WLED palettes with IDs. This file contains all available palettes from WLED firmware including themed palettes like Fire, Ocean, Forest, Party, Sunset, and many more.
+
+**Hiding Palettes:** Set `"show": false` on any palette to hide it from the UI without losing the configuration. This lets you maintain a clean, focused UI while keeping all options available in the config.
+
+```json
+{ "id": 49, "name": "Sakura", "colors": ["#FFB7C5", "#FFC0CB", "#FF69B4"], "icon": "🌸", "show": false }
+```
 
 ### Changing Feature Mapping
 

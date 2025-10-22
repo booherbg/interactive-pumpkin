@@ -150,7 +150,10 @@ class PumpkinPainter {
     const grid = document.getElementById('effectGrid');
     grid.innerHTML = '';
     
-    this.config.effects.effects.forEach(effect => {
+    // Filter effects where show is not false (default to true if not specified)
+    const visibleEffects = this.config.effects.effects.filter(effect => effect.show !== false);
+    
+    visibleEffects.forEach(effect => {
       const btn = document.createElement('button');
       btn.className = 'effect-btn';
       btn.innerHTML = `
@@ -174,7 +177,10 @@ class PumpkinPainter {
     const grid = document.getElementById('paletteGrid');
     grid.innerHTML = '';
     
-    this.config.palettes.palettes.forEach(palette => {
+    // Filter palettes where show is not false (default to true if not specified)
+    const visiblePalettes = this.config.palettes.palettes.filter(palette => palette.show !== false);
+    
+    visiblePalettes.forEach(palette => {
       const btn = document.createElement('button');
       btn.className = 'palette-btn';
       
