@@ -27,6 +27,16 @@
       "group": "face",
       "color": "#FF6600"
     },
+    "bothEyes": {
+      "name": "Both Eyes 👀",
+      "group": "face",
+      "multiSegment": true,
+      "targets": [
+        { "controller": "pumpkin_12v", "segment": 2 },
+        { "controller": "pumpkin_12v", "segment": 3 }
+      ],
+      "color": "#FF6600"
+    },
     "nose": {
       "name": "Nose",
       "controller": "pumpkin_12v",

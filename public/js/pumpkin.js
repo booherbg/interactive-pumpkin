@@ -41,6 +41,16 @@ function debounce(func, wait) {
   };
 }
 
+// Convert hex color to RGB array
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? [
+    parseInt(result[1], 16),
+    parseInt(result[2], 16),
+    parseInt(result[3], 16)
+  ] : null;
+}
+
 class PumpkinPainter {
   constructor() {
     this.config = null;
@@ -53,7 +63,9 @@ class PumpkinPainter {
     
     // Screensaver settings
     this.inactivityTimeout = null;
-    this.inactivityDelay = 30000; // 30 seconds
+    this.inactivityDelay = 60000; // 60 seconds
+    this.resetTimeout = null;
+    this.resetDelay = 300000; // 5 minutes
     this.screensaverActive = true; // Start with screensaver active
     this.bouncingPumpkins = [];
     
@@ -371,10 +383,17 @@ class PumpkinPainter {
     this.updatePumpkinVisualization(this.selectedFeature, [this.selectedColor]);
 
     try {
+      // Convert hex color to RGB array for WLED
+      const rgb = hexToRgb(this.selectedColor);
+      if (!rgb) {
+        this.showToast('❌ Invalid color');
+        return;
+      }
+
       // Set solid effect with color
       await api.setFeature(this.selectedFeature, {
         fx: 0, // Solid effect
-        col: [this.selectedColor]
+        col: [rgb] // WLED expects array of RGB arrays
       });
       
       this.showToast('✓ Color applied!');
@@ -389,10 +408,11 @@ class PumpkinPainter {
       if (!silent) {
         this.showToast('🔄 Resetting to preset 1...');
       }
-      await api.loadPreset(1);
       
-      // Clear pumpkin visualizations
+      // Clear pumpkin visualizations immediately
       this.clearPumpkinVisualization();
+      
+      await api.loadPreset(1);
       
       if (!silent) {
         this.showToast('✓ Reset complete!');
@@ -423,19 +443,11 @@ class PumpkinPainter {
   setupScreensaver() {
     const screensaver = document.getElementById('screensaver');
     
-    // Click/tap anywhere on screensaver to dismiss
+    // Click/tap anywhere on screensaver to dismiss and reset everything
     screensaver.addEventListener('click', () => {
       this.hideScreensaver();
-    });
-    
-    // Track user activity to reset inactivity timer
-    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-    activityEvents.forEach(event => {
-      document.addEventListener(event, () => {
-        if (!this.screensaverActive) {
-          this.resetInactivityTimer();
-        }
-      });
+      this.resetInactivityTimer();
+      this.resetResetTimer();
     });
     
     // Setup bouncing pumpkins
@@ -511,11 +523,8 @@ class PumpkinPainter {
     screensaver.classList.remove('hidden');
     this.screensaverActive = true;
     
-    // Clear pumpkin visualizations
-    this.clearPumpkinVisualization();
-    
-    // Reset the pumpkin (silently, no toasts)
-    this.resetToPreset(true);
+    // DON'T clear pumpkin visualizations - keep the current effect
+    // DON'T reset to preset yet
     
     // Start bouncing animation
     this.animateBouncingPumpkins();
@@ -525,12 +534,21 @@ class PumpkinPainter {
       clearTimeout(this.inactivityTimeout);
       this.inactivityTimeout = null;
     }
+    
+    // Start the 5-minute timer to reset to preset
+    this.resetResetTimer();
   }
 
   hideScreensaver() {
     const screensaver = document.getElementById('screensaver');
     screensaver.classList.add('hidden');
     this.screensaverActive = false;
+    
+    // Clear the reset timer since user is active
+    if (this.resetTimeout) {
+      clearTimeout(this.resetTimeout);
+      this.resetTimeout = null;
+    }
     
     // Start the inactivity timer
     this.resetInactivityTimer();
@@ -546,6 +564,22 @@ class PumpkinPainter {
     this.inactivityTimeout = setTimeout(() => {
       this.showScreensaver();
     }, this.inactivityDelay);
+  }
+
+  resetResetTimer() {
+    // Clear existing timer
+    if (this.resetTimeout) {
+      clearTimeout(this.resetTimeout);
+    }
+    
+    // Set new timer to reset after 5 minutes
+    this.resetTimeout = setTimeout(() => {
+      // Clear pumpkin visualizations
+      this.clearPumpkinVisualization();
+      
+      // Reset the pumpkin to preset (silently, no toasts)
+      this.resetToPreset(true);
+    }, this.resetDelay);
   }
 
   updatePumpkinVisualization(featureName, colors) {
