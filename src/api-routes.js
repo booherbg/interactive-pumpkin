@@ -162,12 +162,33 @@ export function setupRoutes(app, config, controllerManager) {
         client.getInfo()
       ]);
 
+      // Enrich segment data with effect and palette names
+      let enrichedSegments = [];
+      if (stateResult.success && stateResult.data.seg) {
+        enrichedSegments = stateResult.data.seg.map(segment => {
+          // Find effect name
+          const effect = config.effectsReference.effects.find(e => e.id === segment.fx);
+          const effectName = effect ? effect.name : `FX ${segment.fx}`;
+          
+          // Find palette name
+          const palette = config.palettesReference.palettes.find(p => p.id === segment.pal);
+          const paletteName = palette ? palette.name : `Palette ${segment.pal}`;
+          
+          return {
+            ...segment,
+            effectName,
+            paletteName
+          };
+        });
+      }
+
       res.json({
         controllerKey,
         name: client.name,
         ip: client.baseUrl.replace('http://', ''),
         state: stateResult,
-        info: infoResult
+        info: infoResult,
+        segments: enrichedSegments
       });
     } catch (error) {
       console.error('Error in GET /api/controller/:controllerKey:', error);

@@ -19,16 +19,20 @@ async function loadJSON(filename) {
  */
 export async function loadConfig() {
   try {
-    const [pumpkin, effects, palettes] = await Promise.all([
+    const [pumpkin, effects, palettes, effectsReference, palettesReference] = await Promise.all([
       loadJSON('pumpkin.json'),
       loadJSON('effects.json'),
-      loadJSON('palettes.json')
+      loadJSON('palettes.json'),
+      loadJSON('effects-reference.json'),
+      loadJSON('palettes-reference.json')
     ]);
 
     return {
       pumpkin,
       effects,
-      palettes
+      palettes,
+      effectsReference,
+      palettesReference
     };
   } catch (error) {
     console.error('Error loading configuration:', error);

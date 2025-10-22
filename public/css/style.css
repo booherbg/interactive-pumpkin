@@ -528,6 +528,57 @@ body {
   color: var(--color-text-secondary);
 }
 
+.segment-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.segment-item {
+  padding: var(--spacing-sm);
+  background: var(--color-surface-elevated);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-border);
+  transition: all 0.2s ease;
+}
+
+.segment-item.segment-on {
+  border-left-color: var(--color-success);
+  background: rgba(76, 175, 80, 0.05);
+}
+
+.segment-item.segment-off {
+  border-left-color: var(--color-border);
+  opacity: 0.6;
+}
+
+.segment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.segment-status {
+  font-size: 1.2rem;
+}
+
+.segment-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-xs);
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  padding-top: var(--spacing-xs);
+  border-top: 1px solid var(--color-border);
+}
+
+.segment-details > div {
+  padding: 4px 0;
+}
+
 .preset-list {
   display: flex;
   flex-direction: column;

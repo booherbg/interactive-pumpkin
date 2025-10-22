@@ -20,7 +20,7 @@ An interactive web application for controlling a Halloween pumpkin LED installat
 - 💾 **State Persistence** - Remembers your settings across sessions
 - 🔌 **Power & Brightness** - Global controls for all controllers
 - 🎛️ **Fine-tuning** - Precise speed and intensity controls
-- 🖥️ **Controller Status** - View controller info, presets, and device details
+- 🖥️ **Controller Status** - View live segment details with effect/palette names, presets, and device info
 
 ## Quick Start
 
@@ -167,13 +167,20 @@ At the bottom of the admin panel, you'll find the **Controllers** section:
 **View Details:**
 1. Click **"View Details"** on any controller card
 2. See current state (power, brightness, transition time)
-3. View all configured **presets** with their names
-4. Check device info (version, LED count, WiFi strength)
+3. **View all segments** with:
+   - Current effect name and ID
+   - Current palette name and ID
+   - Speed and intensity settings
+   - LED range and count
+   - On/off status indicator
+4. View all configured **presets** with their names
+5. Check device info (version, LED count, WiFi strength)
 
 This is useful for:
-- 🔍 Verifying which presets are available
+- 🔍 Verifying which effects/palettes are running on each segment
 - 🛠️ Troubleshooting connection issues
 - 📊 Monitoring controller health
+- 🎨 Seeing exactly what's active before making changes
 
 ### Available Effects
 

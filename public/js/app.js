@@ -300,6 +300,7 @@ class PumpkinPainter {
         if (data.state.success && data.info.success) {
           const state = data.state.data;
           const info = data.info.data;
+          const segments = data.segments || [];
           
           detailsEl.innerHTML = `
             <div class="controller-detail-section">
@@ -308,6 +309,27 @@ class PumpkinPainter {
                 <div><strong>Power:</strong> ${state.on ? '🟢 ON' : '🔴 OFF'}</div>
                 <div><strong>Brightness:</strong> ${state.bri}/255</div>
                 <div><strong>Transition:</strong> ${state.transition}ms</div>
+              </div>
+            </div>
+            
+            <div class="controller-detail-section">
+              <h4>Segments (${segments.length})</h4>
+              <div class="segment-list">
+                ${segments.length > 0 ? segments.map((seg, idx) => 
+                  `<div class="segment-item ${seg.on ? 'segment-on' : 'segment-off'}">
+                    <div class="segment-header">
+                      <strong>Segment ${seg.id}</strong>
+                      <span class="segment-status">${seg.on ? '🟢' : '⚫'}</span>
+                    </div>
+                    <div class="segment-details">
+                      <div><strong>Effect:</strong> ${seg.effectName || 'Unknown'} (${seg.fx})</div>
+                      <div><strong>Palette:</strong> ${seg.paletteName || 'Unknown'} (${seg.pal})</div>
+                      <div><strong>Speed:</strong> ${seg.sx}/255</div>
+                      <div><strong>Intensity:</strong> ${seg.ix}/255</div>
+                      <div><strong>LEDs:</strong> ${seg.start}-${seg.stop} (${seg.len} LEDs)</div>
+                    </div>
+                  </div>`
+                ).join('') : '<div>No segments configured</div>'}
               </div>
             </div>
             
