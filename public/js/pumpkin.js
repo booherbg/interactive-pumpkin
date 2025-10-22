@@ -190,6 +190,11 @@ class PumpkinPainter {
   openModal(feature, label) {
     this.selectedFeature = feature;
     
+    // Set solid effect as default
+    this.selectedEffect = 0;
+    this.selectedPalette = null;
+    this.selectedColor = null;
+    
     // Set modal title
     document.getElementById('modalTitle').textContent = `Control ${label}`;
     
@@ -223,6 +228,12 @@ class PumpkinPainter {
     visibleEffects.forEach(effect => {
       const btn = document.createElement('button');
       btn.className = 'effect-btn';
+      
+      // Mark solid effect (id=0) as active by default
+      if (effect.id === 0) {
+        btn.classList.add('active');
+      }
+      
       btn.innerHTML = `
         <div class="effect-icon">${effect.icon}</div>
         <div class="effect-name">${effect.name}</div>
