@@ -57,6 +57,9 @@ class PumpkinPainter {
     this.screensaverActive = true; // Start with screensaver active
     this.bouncingPumpkins = [];
     
+    // Track active feature visualizations
+    this.activeFeatures = {};
+    
     // Define solid color presets
     this.solidColors = [
       { name: 'Red', color: '#FF0000', icon: '🔴' },
@@ -335,6 +338,14 @@ class PumpkinPainter {
       props.pal = this.selectedPalette;
     }
 
+    // Update pumpkin visualization immediately before API call
+    if (this.selectedPalette !== null) {
+      const palette = this.config.palettes.palettes.find(p => p.id === this.selectedPalette);
+      if (palette && palette.colors) {
+        this.updatePumpkinVisualization(this.selectedFeature, palette.colors);
+      }
+    }
+
     try {
       await api.setFeature(this.selectedFeature, props);
       this.showToast('✓ Applied!');
@@ -356,12 +367,16 @@ class PumpkinPainter {
       return;
     }
 
+    // Update pumpkin visualization immediately before API call
+    this.updatePumpkinVisualization(this.selectedFeature, [this.selectedColor]);
+
     try {
       // Set solid effect with color
       await api.setFeature(this.selectedFeature, {
         fx: 0, // Solid effect
         col: [this.selectedColor]
       });
+      
       this.showToast('✓ Color applied!');
     } catch (error) {
       console.error('Failed to apply color:', error);
@@ -375,6 +390,10 @@ class PumpkinPainter {
         this.showToast('🔄 Resetting to preset 1...');
       }
       await api.loadPreset(1);
+      
+      // Clear pumpkin visualizations
+      this.clearPumpkinVisualization();
+      
       if (!silent) {
         this.showToast('✓ Reset complete!');
       }
@@ -492,6 +511,9 @@ class PumpkinPainter {
     screensaver.classList.remove('hidden');
     this.screensaverActive = true;
     
+    // Clear pumpkin visualizations
+    this.clearPumpkinVisualization();
+    
     // Reset the pumpkin (silently, no toasts)
     this.resetToPreset(true);
     
@@ -524,6 +546,163 @@ class PumpkinPainter {
     this.inactivityTimeout = setTimeout(() => {
       this.showScreensaver();
     }, this.inactivityDelay);
+  }
+
+  updatePumpkinVisualization(featureName, colors) {
+    console.log('Updating visualization for:', featureName, 'with colors:', colors);
+    
+    // Get the feature config to find which segments it affects
+    const feature = this.config.features[featureName];
+    if (!feature) {
+      console.warn('Feature not found in config:', featureName);
+      return;
+    }
+    
+    const svg = document.querySelector('.pumpkin-svg');
+    
+    // Determine which SVG elements to highlight
+    let svgFeaturesToHighlight = [];
+    
+    // First, try to find the feature directly in the SVG
+    let directElement = svg.querySelector(`[data-feature="${featureName}"]`);
+    if (directElement) {
+      // Direct match - this feature has its own SVG element
+      svgFeaturesToHighlight.push(featureName);
+    } else {
+      // No direct match - need to find which multi-segment features contain this feature's segment(s)
+      const featureSegments = new Set();
+      
+      if (feature.multiSegment && feature.targets) {
+        // This is a multi-segment feature
+        feature.targets.forEach(t => {
+          const key = `${t.controller}:${t.segment}`;
+          featureSegments.add(key);
+        });
+      } else if (feature.segment !== undefined && feature.controller) {
+        // Single segment feature
+        const key = `${feature.controller}:${feature.segment}`;
+        featureSegments.add(key);
+      }
+      
+      // Find all features that have SVG elements and check if they match
+      Object.entries(this.config.features).forEach(([svgFeatureName, svgFeatureConfig]) => {
+        const svgElement = svg.querySelector(`[data-feature="${svgFeatureName}"]`);
+        if (!svgElement) return; // Skip if no SVG element exists
+        
+        // Check if this SVG feature contains any of our segments
+        if (svgFeatureConfig.multiSegment && svgFeatureConfig.targets) {
+          const containsSegment = svgFeatureConfig.targets.some(t => {
+            const key = `${t.controller}:${t.segment}`;
+            return featureSegments.has(key);
+          });
+          if (containsSegment) {
+            svgFeaturesToHighlight.push(svgFeatureName);
+          }
+        } else if (svgFeatureConfig.segment !== undefined && svgFeatureConfig.controller) {
+          const key = `${svgFeatureConfig.controller}:${svgFeatureConfig.segment}`;
+          if (featureSegments.has(key)) {
+            svgFeaturesToHighlight.push(svgFeatureName);
+          }
+        }
+      });
+    }
+    
+    console.log('SVG features to highlight:', svgFeaturesToHighlight);
+    
+    // Update visualization for each SVG element
+    svgFeaturesToHighlight.forEach(elementFeature => {
+      const element = svg.querySelector(`[data-feature="${elementFeature}"]`);
+      if (!element) {
+        console.warn('Element not found for feature:', elementFeature);
+        return;
+      }
+      
+      console.log('Found element:', element, 'for feature:', elementFeature);
+      
+      // Store that this feature is active
+      this.activeFeatures[elementFeature] = colors;
+      
+      // Create or update gradient for this element
+      const gradientId = `gradient-${elementFeature}`;
+      let gradient = document.getElementById(gradientId);
+      const defs = svg.querySelector('defs') || svg.insertBefore(document.createElementNS('http://www.w3.org/2000/svg', 'defs'), svg.firstChild);
+      
+      if (!gradient) {
+        // Create new gradient
+        gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        gradient.id = gradientId;
+        gradient.setAttribute('x1', '0%');
+        gradient.setAttribute('y1', '0%');
+        gradient.setAttribute('x2', '100%');
+        gradient.setAttribute('y2', '100%');
+        defs.appendChild(gradient);
+      } else {
+        // Clear existing gradient content to update it
+        while (gradient.firstChild) {
+          gradient.removeChild(gradient.firstChild);
+        }
+      }
+      
+      // Add/update color stops
+      for (let i = 0; i < 3; i++) {
+        const stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop.setAttribute('offset', `${(i * 50)}%`);
+        stop.setAttribute('stop-color', colors[i % colors.length]);
+        
+        const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+        animate.setAttribute('attributeName', 'stop-color');
+        animate.setAttribute('dur', '3s');
+        animate.setAttribute('repeatCount', 'indefinite');
+        
+        const colorIndex = i % colors.length;
+        const nextColorIndex = (i + 1) % colors.length;
+        animate.setAttribute('values', `${colors[colorIndex]};${colors[nextColorIndex]};${colors[colorIndex]}`);
+        
+        stop.appendChild(animate);
+        gradient.appendChild(stop);
+      }
+      
+      // Add rotation animation
+      const animateTransform = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
+      animateTransform.setAttribute('attributeName', 'gradientTransform');
+      animateTransform.setAttribute('type', 'rotate');
+      animateTransform.setAttribute('from', '0 0.5 0.5');
+      animateTransform.setAttribute('to', '360 0.5 0.5');
+      animateTransform.setAttribute('dur', '6s');
+      animateTransform.setAttribute('repeatCount', 'indefinite');
+      gradient.appendChild(animateTransform);
+      
+      // Apply gradient based on element type
+      if (element.classList.contains('inner-fill') || element.classList.contains('feature-cutout')) {
+        element.style.fill = `url(#${gradientId})`;
+        // For feature cutouts, also apply the gradient to the stroke for a cohesive look
+        if (element.classList.contains('feature-cutout')) {
+          element.style.stroke = `url(#${gradientId})`;
+        }
+        console.log('Applied fill gradient to:', elementFeature);
+      } else if (element.classList.contains('outer-shell-left') || element.classList.contains('outer-shell-right') || element.classList.contains('pumpkin-shell')) {
+        element.style.stroke = `url(#${gradientId})`;
+        console.log('Applied stroke gradient to:', elementFeature);
+      }
+      
+      // Add active class for additional styling
+      element.classList.add('feature-active');
+    });
+  }
+
+  clearPumpkinVisualization() {
+    // Clear all active features
+    const svg = document.querySelector('.pumpkin-svg');
+    Object.keys(this.activeFeatures).forEach(featureName => {
+      const element = svg.querySelector(`[data-feature="${featureName}"]`);
+      if (element) {
+        element.classList.remove('feature-active');
+        element.style.fill = '';
+        element.style.stroke = '';
+      }
+    });
+    
+    this.activeFeatures = {};
   }
 }
 
