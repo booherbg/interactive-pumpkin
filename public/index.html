@@ -18,11 +18,6 @@
       <button class="shortcut-btn whole-pumpkin" data-feature="wholePumpkin" data-label="Whole Pumpkin">🎃 Whole Pumpkin</button>
       <button class="shortcut-btn" data-feature="allFace" data-label="Whole Face">✨ Whole Face</button>
       <button class="shortcut-btn" data-feature="leftEye" data-label="Eyes">👀 Eyes</button>
-      <button class="shortcut-btn" data-feature="nose" data-label="Nose">👃 Nose</button>
-      <button class="shortcut-btn" data-feature="allMouth" data-label="Mouth">👄 Mouth</button>
-      <button class="shortcut-btn" data-feature="innerFiller" data-label="Inner Fill">💡 Inner</button>
-      <button class="shortcut-btn" data-feature="pumpkinShell" data-label="Shell">🔶 Shell</button>
-      <button class="shortcut-btn" data-feature="bothRims" data-label="Outer Space">🌟 Outer</button>
     </div>
 
     <div class="pumpkin-container">
@@ -76,17 +71,22 @@
         </div>
 
         <div class="modal-body">
+          <section class="modal-section" id="paletteSection">
+            <h3>Color Palette</h3>
+            <div class="palette-grid" id="paletteGrid"></div>
+          </section>
+
+          <section class="modal-section" id="solidColorSection">
+            <h3>Solid Color</h3>
+            <div class="color-grid" id="colorGrid"></div>
+          </section>
+
           <section class="modal-section">
             <h3>Effect</h3>
             <div class="effect-grid" id="effectGrid"></div>
           </section>
 
-          <section class="modal-section">
-            <h3>Color Palette</h3>
-            <div class="palette-grid" id="paletteGrid"></div>
-          </section>
-
-          <div class="controls-section">
+          <div class="controls-section" id="controlsSection">
             <div class="slider-group">
               <label>
                 <span>Speed</span>
@@ -103,8 +103,6 @@
               <input type="range" id="intensitySlider" min="0" max="255" value="128" class="slider">
             </div>
           </div>
-
-          <button class="apply-btn" id="applyBtn">Apply</button>
         </div>
       </div>
     </div>

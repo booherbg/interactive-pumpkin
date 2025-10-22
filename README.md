@@ -134,9 +134,10 @@ You can switch between them at any time - there's an ⚙️ icon in the user int
 
 **Option 2: Visual Pumpkin** (tap directly)
 1. **Tap a pumpkin area** - Eyes, nose, mouth, thick dark orange outline (shell), or light orange interior
-2. **Select effect and palette** - Choose from the modal that appears
-3. **Adjust speed/intensity** - Use the sliders (optional)
-4. **Apply** - Tap the Apply button
+2. **Select effect** - Tap an effect icon → **instantly applied!** ⚡
+3. **Select palette** - Tap a palette → **instantly applied!** ⚡
+4. **Adjust speed/intensity** - Drag sliders → **instantly applied!** ⚡
+5. **Close modal** - Tap the X or click outside to close
 
 **Reset Button** (bottom right):
 - 🔄 **Reset** - Loads preset 1 on both controllers to restore default state
@@ -150,10 +151,10 @@ You can switch between them at any time - there's an ⚙️ icon in the user int
 ### Admin Panel (Advanced users)
 
 1. **Select a Feature** - Tap on a feature button (e.g., Left Eye)
-2. **Choose an Effect** - Tap an effect icon (e.g., 🔥 Fire)
-3. **Choose a Palette** - Tap a palette (e.g., 🎃 Halloween)
-4. **Adjust Settings** - Use sliders to adjust speed and intensity
-5. **Repeat** - Select different features and apply different effects
+2. **Choose an Effect** - Tap an effect icon (e.g., 🔥 Fire) → **instantly applied!** ⚡
+3. **Choose a Palette** - Tap a palette (e.g., 🎃 Halloween) → **instantly applied!** ⚡
+4. **Adjust Settings** - Drag speed/intensity sliders → **instantly applied!** ⚡
+5. **Repeat** - Select different features and instantly see effects change
 
 ### Controller Status
 

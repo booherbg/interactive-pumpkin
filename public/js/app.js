@@ -50,7 +50,6 @@ class PumpkinPainter {
       }
       
       hideLoading();
-      showToast('🎃 Pumpkin Painter ready!', 'success');
       
     } catch (error) {
       console.error('Failed to initialize:', error);
@@ -409,7 +408,6 @@ class PumpkinPainter {
         try {
           await api.setPower(isPowerOn);
           saveState('power', isPowerOn);
-          showToast(isPowerOn ? '🔌 Power On' : '🔌 Power Off', 'success');
         } catch (error) {
           console.error('Failed to set power:', error);
           showToast('Failed to set power', 'error');
@@ -558,16 +556,17 @@ class PumpkinPainter {
       this.featureStates[this.selectedFeature] = props;
       saveState('featureStates', this.featureStates);
       
-      // Update feature button icon
+      // Update feature button icon with visual feedback
       const effect = this.config.effects.effects.find(e => e.id === this.currentEffect);
       if (effect) {
         const button = document.querySelector(`[data-feature="${this.selectedFeature}"]`);
         if (button) {
           button.querySelector('.feature-status').textContent = effect.icon;
+          // Add brief visual feedback
+          button.classList.add('just-updated');
+          setTimeout(() => button.classList.remove('just-updated'), 600);
         }
       }
-      
-      showToast('✓ Applied', 'success');
       
     } catch (error) {
       console.error('Failed to apply settings:', error);

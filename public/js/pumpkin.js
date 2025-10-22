@@ -28,14 +28,47 @@ const api = {
   }
 };
 
+// Debounce helper
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
 class PumpkinPainter {
   constructor() {
     this.config = null;
     this.selectedFeature = null;
     this.selectedEffect = null;
     this.selectedPalette = null;
+    this.selectedColor = null;
     this.speed = 128;
     this.intensity = 128;
+    
+    // Define solid color presets
+    this.solidColors = [
+      { name: 'Red', color: '#FF0000', icon: '🔴' },
+      { name: 'Orange', color: '#FF6600', icon: '🟠' },
+      { name: 'Yellow', color: '#FFFF00', icon: '🟡' },
+      { name: 'Lime', color: '#00FF00', icon: '🟢' },
+      { name: 'Green', color: '#008000', icon: '💚' },
+      { name: 'Cyan', color: '#00FFFF', icon: '🔵' },
+      { name: 'Blue', color: '#0000FF', icon: '🔵' },
+      { name: 'Purple', color: '#800080', icon: '🟣' },
+      { name: 'Magenta', color: '#FF00FF', icon: '💜' },
+      { name: 'Pink', color: '#FF1493', icon: '💗' },
+      { name: 'White', color: '#FFFFFF', icon: '⚪' },
+      { name: 'Warm White', color: '#FFE4B5', icon: '🤍' },
+    ];
+    
+    // Create debounced apply function
+    this.debouncedApply = debounce(() => this.applySettings(), 300);
   }
 
   async init() {
@@ -108,16 +141,21 @@ class PumpkinPainter {
     speedSlider.addEventListener('input', (e) => {
       this.speed = parseInt(e.target.value);
       document.getElementById('speedValue').textContent = this.speed;
+      
+      // Apply with debounce to avoid too many requests
+      if (this.selectedFeature) {
+        this.debouncedApply();
+      }
     });
     
     intensitySlider.addEventListener('input', (e) => {
       this.intensity = parseInt(e.target.value);
       document.getElementById('intensityValue').textContent = this.intensity;
-    });
-
-    // Apply button
-    document.getElementById('applyBtn').addEventListener('click', () => {
-      this.applySettings();
+      
+      // Apply with debounce to avoid too many requests
+      if (this.selectedFeature) {
+        this.debouncedApply();
+      }
     });
 
     // Reset button
@@ -137,6 +175,12 @@ class PumpkinPainter {
     
     // Populate palettes
     this.populatePalettes();
+    
+    // Populate colors
+    this.populateColors();
+    
+    // Update section visibility based on current selection
+    this.updateSectionVisibility();
     
     // Show modal
     document.getElementById('controlModal').classList.add('show');
@@ -167,6 +211,14 @@ class PumpkinPainter {
         // Add active to this one
         btn.classList.add('active');
         this.selectedEffect = effect.id;
+        
+        // Update section visibility
+        this.updateSectionVisibility();
+        
+        // If solid effect, don't apply until color is selected
+        if (effect.id !== 0) {
+          this.applySettings();
+        }
       });
       
       grid.appendChild(btn);
@@ -199,10 +251,51 @@ class PumpkinPainter {
         // Add active to this one
         btn.classList.add('active');
         this.selectedPalette = palette.id;
+        
+        // Apply immediately
+        this.applySettings();
       });
       
       grid.appendChild(btn);
     });
+  }
+
+  populateColors() {
+    const grid = document.getElementById('colorGrid');
+    grid.innerHTML = '';
+    
+    this.solidColors.forEach(colorPreset => {
+      const btn = document.createElement('button');
+      btn.className = 'color-btn';
+      btn.style.setProperty('--color', colorPreset.color);
+      
+      btn.innerHTML = `
+        <div class="color-swatch" style="background-color: ${colorPreset.color}"></div>
+        <div class="color-name">${colorPreset.name}</div>
+      `;
+      
+      btn.addEventListener('click', () => {
+        // Remove active from all
+        grid.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        // Add active to this one
+        btn.classList.add('active');
+        this.selectedColor = colorPreset.color;
+        
+        // Apply color immediately
+        this.applyColorSettings();
+      });
+      
+      grid.appendChild(btn);
+    });
+  }
+
+  updateSectionVisibility() {
+    const isSolid = this.selectedEffect === 0;
+    
+    // Show/hide sections based on whether solid is selected
+    document.getElementById('solidColorSection').style.display = isSolid ? 'block' : 'none';
+    document.getElementById('paletteSection').style.display = isSolid ? 'none' : 'block';
+    document.getElementById('controlsSection').style.display = isSolid ? 'none' : 'block';
   }
 
   createGradient(colors) {
@@ -237,10 +330,34 @@ class PumpkinPainter {
     try {
       await api.setFeature(this.selectedFeature, props);
       this.showToast('✓ Applied!');
-      this.closeModal();
+      // Don't close modal - let user continue selecting
     } catch (error) {
       console.error('Failed to apply settings:', error);
       this.showToast('❌ Failed to apply');
+    }
+  }
+
+  async applyColorSettings() {
+    if (!this.selectedFeature) {
+      this.showToast('❌ No feature selected');
+      return;
+    }
+
+    if (!this.selectedColor) {
+      this.showToast('❌ No color selected');
+      return;
+    }
+
+    try {
+      // Set solid effect with color
+      await api.setFeature(this.selectedFeature, {
+        fx: 0, // Solid effect
+        col: [this.selectedColor]
+      });
+      this.showToast('✓ Color applied!');
+    } catch (error) {
+      console.error('Failed to apply color:', error);
+      this.showToast('❌ Failed to apply color');
     }
   }
 
