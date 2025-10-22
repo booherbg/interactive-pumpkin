@@ -20,6 +20,11 @@
       <button class="shortcut-btn" data-feature="leftEye" data-label="Eyes">👀 Eyes</button>
     </div>
 
+    <!-- Instructions -->
+    <div class="instructions">
+      <p class="instruction-text">👆 Tap any part of the pumpkin to light it up! 👇</p>
+    </div>
+
     <div class="pumpkin-container">
       <!-- SVG Pumpkin -->
       <svg viewBox="0 0 600 600" class="pumpkin-svg">
@@ -114,6 +119,16 @@
     <button class="reset-btn" id="resetBtn" title="Reset to Preset 1">
       🔄 Reset
     </button>
+
+    <!-- Screensaver -->
+    <div class="screensaver" id="screensaver">
+      <div class="screensaver-bouncing-bg" id="screensaverBouncingBg"></div>
+      <div class="screensaver-content">
+        <div class="bouncing-pumpkin">🎃</div>
+        <h2 class="screensaver-title">Tap here to paint the pumpkin!</h2>
+        <p class="screensaver-subtitle">✨ Create your own light show ✨</p>
+      </div>
+    </div>
   </div>
 
   <script type="module" src="/js/pumpkin.js"></script>

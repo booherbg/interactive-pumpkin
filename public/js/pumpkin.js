@@ -51,6 +51,12 @@ class PumpkinPainter {
     this.speed = 128;
     this.intensity = 128;
     
+    // Screensaver settings
+    this.inactivityTimeout = null;
+    this.inactivityDelay = 30000; // 30 seconds
+    this.screensaverActive = true; // Start with screensaver active
+    this.bouncingPumpkins = [];
+    
     // Define solid color presets
     this.solidColors = [
       { name: 'Red', color: '#FF0000', icon: '🔴' },
@@ -80,8 +86,10 @@ class PumpkinPainter {
       // Setup event listeners
       this.setupEventListeners();
       
-      // Show welcome toast
-      this.showToast('🎃 Tap any part of the pumpkin to control it!');
+      // Setup screensaver
+      this.setupScreensaver();
+      
+      // Screensaver is already showing on page load
       
     } catch (error) {
       console.error('Failed to initialize:', error);
@@ -361,14 +369,20 @@ class PumpkinPainter {
     }
   }
 
-  async resetToPreset() {
+  async resetToPreset(silent = false) {
     try {
-      this.showToast('🔄 Resetting to preset 1...');
+      if (!silent) {
+        this.showToast('🔄 Resetting to preset 1...');
+      }
       await api.loadPreset(1);
-      this.showToast('✓ Reset complete!');
+      if (!silent) {
+        this.showToast('✓ Reset complete!');
+      }
     } catch (error) {
       console.error('Failed to reset:', error);
-      this.showToast('❌ Failed to reset');
+      if (!silent) {
+        this.showToast('❌ Failed to reset');
+      }
     }
   }
 
@@ -385,6 +399,131 @@ class PumpkinPainter {
       toast.style.animation = 'slideInRight 0.3s reverse';
       setTimeout(() => toast.remove(), 300);
     }, 3000);
+  }
+
+  setupScreensaver() {
+    const screensaver = document.getElementById('screensaver');
+    
+    // Click/tap anywhere on screensaver to dismiss
+    screensaver.addEventListener('click', () => {
+      this.hideScreensaver();
+    });
+    
+    // Track user activity to reset inactivity timer
+    const activityEvents = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
+    activityEvents.forEach(event => {
+      document.addEventListener(event, () => {
+        if (!this.screensaverActive) {
+          this.resetInactivityTimer();
+        }
+      });
+    });
+    
+    // Setup bouncing pumpkins
+    this.setupBouncingPumpkins();
+  }
+
+  setupBouncingPumpkins() {
+    const container = document.getElementById('screensaverBouncingBg');
+    const pumpkinCount = 50;
+    this.bouncingPumpkins = [];
+    
+    // Create 50 bouncing pumpkins
+    for (let i = 0; i < pumpkinCount; i++) {
+      const pumpkin = document.createElement('div');
+      pumpkin.className = 'bouncing-pumpkin-bg';
+      pumpkin.textContent = '🎃';
+      container.appendChild(pumpkin);
+      
+      // Random starting position and velocity
+      const pumpkinData = {
+        element: pumpkin,
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 2, // velocity between -1 and 1
+        vy: (Math.random() - 0.5) * 2,
+        size: 1.5 + Math.random() * 2, // size between 1.5rem and 3.5rem
+      };
+      
+      // Set initial size
+      pumpkin.style.fontSize = `${pumpkinData.size}rem`;
+      
+      this.bouncingPumpkins.push(pumpkinData);
+    }
+    
+    // Start animation
+    this.animateBouncingPumpkins();
+  }
+
+  animateBouncingPumpkins() {
+    if (!this.screensaverActive || !this.bouncingPumpkins || this.bouncingPumpkins.length === 0) {
+      return;
+    }
+    
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    
+    this.bouncingPumpkins.forEach(pumpkin => {
+      // Update position
+      pumpkin.x += pumpkin.vx;
+      pumpkin.y += pumpkin.vy;
+      
+      // Bounce off edges
+      if (pumpkin.x <= 0 || pumpkin.x >= width - 50) {
+        pumpkin.vx *= -1;
+        pumpkin.x = Math.max(0, Math.min(width - 50, pumpkin.x));
+      }
+      
+      if (pumpkin.y <= 0 || pumpkin.y >= height - 50) {
+        pumpkin.vy *= -1;
+        pumpkin.y = Math.max(0, Math.min(height - 50, pumpkin.y));
+      }
+      
+      // Apply position
+      pumpkin.element.style.transform = `translate(${pumpkin.x}px, ${pumpkin.y}px)`;
+    });
+    
+    // Continue animation
+    requestAnimationFrame(() => this.animateBouncingPumpkins());
+  }
+
+  showScreensaver() {
+    const screensaver = document.getElementById('screensaver');
+    screensaver.classList.remove('hidden');
+    this.screensaverActive = true;
+    
+    // Reset the pumpkin (silently, no toasts)
+    this.resetToPreset(true);
+    
+    // Start bouncing animation
+    this.animateBouncingPumpkins();
+    
+    // Clear any inactivity timer
+    if (this.inactivityTimeout) {
+      clearTimeout(this.inactivityTimeout);
+      this.inactivityTimeout = null;
+    }
+  }
+
+  hideScreensaver() {
+    const screensaver = document.getElementById('screensaver');
+    screensaver.classList.add('hidden');
+    this.screensaverActive = false;
+    
+    // Start the inactivity timer
+    this.resetInactivityTimer();
+  }
+
+  resetInactivityTimer() {
+    // Clear existing timer
+    if (this.inactivityTimeout) {
+      clearTimeout(this.inactivityTimeout);
+    }
+    
+    // Set new timer
+    this.inactivityTimeout = setTimeout(() => {
+      this.showScreensaver();
+    }, this.inactivityDelay);
   }
 }
 
