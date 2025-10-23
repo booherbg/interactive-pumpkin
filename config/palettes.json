@@ -50,7 +50,33 @@
     { "id": 14, "name": "Rivendell", "colors": ["#4169E1", "#6495ED", "#87CEEB", "#B0C4DE"], "show": false },
     
     { "id": 18, "name": "Analogous", "colors": ["#FF0000", "#FF8800", "#FFFF00"], "show": false },
-    { "id": 19, "name": "Splash", "colors": ["#00FFFF", "#FF00FF", "#FFFF00", "#00FF00"], "show": false }
+    { "id": 19, "name": "Splash", "colors": ["#00FFFF", "#FF00FF", "#FFFF00", "#00FF00"], "show": false },
+    
+    { "id": 17, "name": "Yellowout", "colors": ["#664400", "#AA7700", "#FFAA00", "#FFDD00", "#FFFF00"], "show": true },
+    { "id": 24, "name": "Departure", "colors": ["#000033", "#330066", "#660099", "#9900CC", "#CC00FF"], "show": true },
+    { "id": 25, "name": "Landscape", "colors": ["#003300", "#006633", "#009966", "#33CC99", "#66FFCC"], "show": true },
+    { "id": 26, "name": "Beech", "colors": ["#442200", "#886633", "#CCAA66", "#EEDD99", "#FFFFCC"], "show": true },
+    { "id": 27, "name": "Sherbet", "colors": ["#FF6699", "#FFAA88", "#FFDD77", "#EEFFAA", "#CCFFCC"], "show": true },
+    
+    { "id": 28, "name": "Hult", "colors": ["#000044", "#440066", "#880088", "#CC0088", "#FF0066"], "show": true },
+    { "id": 29, "name": "Hult 64", "colors": ["#220044", "#550066", "#880088", "#BB0088", "#EE0066"], "show": true },
+    { "id": 30, "name": "Drywet", "colors": ["#AA5500", "#DDAA33", "#FFFFAA", "#66DDFF", "#0088CC"], "show": true },
+    
+    { "id": 31, "name": "Jul", "colors": ["#FF0000", "#00FF00", "#FFFFFF", "#FF0000", "#00FF00"], "show": true },
+    { "id": 32, "name": "Grintage", "colors": ["#004400", "#228822", "#66BB66", "#AADDAA", "#EEFFEE"], "show": true },
+    { "id": 33, "name": "Rewhi", "colors": ["#FF0000", "#FF8800", "#FFFF00", "#FFFFFF"], "show": true },
+    { "id": 34, "name": "Tertiary", "colors": ["#FF0000", "#FFAA00", "#00FF00", "#00FFFF", "#0000FF", "#FF00FF"], "show": true },
+    
+    { "id": 37, "name": "Cyane", "colors": ["#000033", "#003366", "#006699", "#0099CC", "#00CCFF"], "show": true },
+    { "id": 41, "name": "Magred", "colors": ["#FF00FF", "#FF0088", "#FF0044", "#FF0000"], "show": true },
+    { "id": 42, "name": "Yelmag", "colors": ["#FFFF00", "#FFAA00", "#FF5500", "#FF00AA", "#FF00FF"], "show": true },
+    { "id": 43, "name": "Yelblu", "colors": ["#FFFF00", "#AAFF00", "#55FF00", "#00AAFF", "#0000FF"], "show": true },
+    
+    { "id": 45, "name": "Tiamat", "colors": ["#000033", "#330055", "#660077", "#990099", "#CC00BB"], "show": true },
+    { "id": 46, "name": "April Night", "colors": ["#000022", "#220044", "#440088", "#6600CC", "#8800FF"], "show": true },
+    
+    { "id": 53, "name": "C9 New", "colors": ["#FF0000", "#FF6600", "#FFCC00", "#00FF00", "#0066FF", "#8800FF"], "show": false },
+    { "id": 54, "name": "Temperature", "colors": ["#0000FF", "#0066FF", "#00CCFF", "#FFAA00", "#FF0000"], "show": false }
   ]
 }
 
