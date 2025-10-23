@@ -9,7 +9,8 @@
   ],
   "palettes": [
     { "id": 0, "name": "Default", "colors": ["#000000"], "show": true },
-    { "id": 1, "name": "Random", "colors": ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"], "show": true },
+    { "id": 1, "name": "Random Cycle", "colors": ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"], "show": true },
+    { "id": 3, "name": "Colors 1&2", "colors": ["#FF6600", "#0000FF"], "show": true },
     
     { "id": 11, "name": "Rainbow", "colors": ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#8B00FF"], "show": true },
     { "id": 12, "name": "Rainbow Bands", "colors": ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#8B00FF"], "show": true },
@@ -59,7 +60,7 @@
     { "id": 27, "name": "Sherbet", "colors": ["#FF6699", "#FFAA88", "#FFDD77", "#EEFFAA", "#CCFFCC"], "show": true },
     
     { "id": 28, "name": "Hult", "colors": ["#000044", "#440066", "#880088", "#CC0088", "#FF0066"], "show": true },
-    { "id": 29, "name": "Hult 64", "colors": ["#220044", "#550066", "#880088", "#BB0088", "#EE0066"], "show": true },
+    { "id": 29, "name": "Hult 64", "colors": ["#220044", "#550066", "#880088", "#BB0088", "#EE0066"], "show": false },
     { "id": 30, "name": "Drywet", "colors": ["#AA5500", "#DDAA33", "#FFFFAA", "#66DDFF", "#0088CC"], "show": true },
     
     { "id": 31, "name": "Jul", "colors": ["#FF0000", "#00FF00", "#FFFFFF", "#FF0000", "#00FF00"], "show": true },

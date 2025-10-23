@@ -458,6 +458,13 @@ header h1 {
   line-height: 1.2;
 }
 
+/* Custom Colors Grid */
+.custom-colors-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
 /* Color Grid */
 .color-grid {
   display: grid;

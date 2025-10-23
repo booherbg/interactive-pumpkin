@@ -58,6 +58,9 @@ class PumpkinPainter {
     this.selectedEffect = null;
     this.selectedPalette = null;
     this.selectedColor = null;
+    this.customColor1 = '#FF6600'; // Default color 1
+    this.customColor2 = '#0000FF'; // Default color 2
+    this.customColorsInitialized = false; // Track if user has selected both colors
     this.speed = 128;
     this.intensity = 128;
     
@@ -65,8 +68,9 @@ class PumpkinPainter {
     this.inactivityTimeout = null;
     this.inactivityDelay = 60000; // 60 seconds
     this.resetTimeout = null;
-    this.resetDelay = 300000; // 5 minutes
+    this.resetDelay = 10000; // 10 seconds after screensaver activates
     this.screensaverActive = true; // Start with screensaver active
+    this.shouldResetOnNextTap = false; // Flag to track if we should reset on next tap
     this.bouncingPumpkins = [];
     
     // Track active feature visualizations
@@ -194,6 +198,7 @@ class PumpkinPainter {
     this.selectedEffect = 0;
     this.selectedPalette = null;
     this.selectedColor = null;
+    this.customColorsInitialized = false; // Reset when opening modal
     
     // Set modal title
     document.getElementById('modalTitle').textContent = `Control ${label}`;
@@ -228,6 +233,7 @@ class PumpkinPainter {
     visibleEffects.forEach(effect => {
       const btn = document.createElement('button');
       btn.className = 'effect-btn';
+      btn.dataset.effectId = effect.id;
       
       // Mark solid effect (id=0) as active by default
       if (effect.id === 0) {
@@ -286,8 +292,13 @@ class PumpkinPainter {
         btn.classList.add('active');
         this.selectedPalette = palette.id;
         
-        // Apply immediately
-        this.applySettings();
+        // Update section visibility (to show/hide custom colors)
+        this.updateSectionVisibility();
+        
+        // Apply immediately (unless it's Colors 1&2, which needs custom colors first)
+        if (palette.id !== 3) {
+          this.applySettings();
+        }
       });
       
       grid.appendChild(btn);
@@ -315,21 +326,124 @@ class PumpkinPainter {
         btn.classList.add('active');
         this.selectedColor = colorPreset.color;
         
-        // Apply color immediately
+        // Set to solid effect and clear palette selection
+        this.selectedEffect = 0;
+        this.selectedPalette = null;
+        
+        // Clear palette selection
+        document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
+        
+        // Mark Solid effect as active
+        document.querySelectorAll('.effect-btn').forEach(effectBtn => {
+          const effectId = parseInt(effectBtn.dataset.effectId);
+          if (effectId === 0) {
+            effectBtn.classList.add('active');
+          } else {
+            effectBtn.classList.remove('active');
+          }
+        });
+        
+        // Apply the solid color
         this.applyColorSettings();
       });
       
       grid.appendChild(btn);
     });
+    
+    // Populate custom color grids
+    this.populateCustomColors();
+  }
+  
+  populateCustomColors() {
+    // Populate color 1 grid
+    const grid1 = document.getElementById('customColor1Grid');
+    grid1.innerHTML = '';
+    
+    let color1Selected = false;
+    let color2Selected = false;
+    
+    this.solidColors.forEach(colorPreset => {
+      const btn = document.createElement('button');
+      btn.className = 'color-btn';
+      btn.style.setProperty('--color', colorPreset.color);
+      
+      btn.innerHTML = `
+        <div class="color-swatch" style="background-color: ${colorPreset.color}"></div>
+        <div class="color-name">${colorPreset.name}</div>
+      `;
+      
+      // Mark as active if it matches current customColor1
+      if (colorPreset.color === this.customColor1) {
+        btn.classList.add('active');
+        color1Selected = true;
+      }
+      
+      btn.addEventListener('click', () => {
+        // Remove active from all in this grid
+        grid1.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        // Add active to this one
+        btn.classList.add('active');
+        this.customColor1 = colorPreset.color;
+        
+        // If both colors have been selected, apply automatically
+        if (this.customColorsInitialized) {
+          this.applySettings();
+        }
+      });
+      
+      grid1.appendChild(btn);
+    });
+    
+    // Populate color 2 grid
+    const grid2 = document.getElementById('customColor2Grid');
+    grid2.innerHTML = '';
+    
+    this.solidColors.forEach(colorPreset => {
+      const btn = document.createElement('button');
+      btn.className = 'color-btn';
+      btn.style.setProperty('--color', colorPreset.color);
+      
+      btn.innerHTML = `
+        <div class="color-swatch" style="background-color: ${colorPreset.color}"></div>
+        <div class="color-name">${colorPreset.name}</div>
+      `;
+      
+      // Mark as active if it matches current customColor2
+      if (colorPreset.color === this.customColor2) {
+        btn.classList.add('active');
+        color2Selected = true;
+      }
+      
+      btn.addEventListener('click', () => {
+        // Remove active from all in this grid
+        grid2.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+        // Add active to this one
+        btn.classList.add('active');
+        this.customColor2 = colorPreset.color;
+        
+        // Mark as initialized and apply
+        this.customColorsInitialized = true;
+        this.applySettings();
+      });
+      
+      grid2.appendChild(btn);
+    });
+    
+    // If both colors were already selected (from defaults), mark as initialized
+    if (color1Selected && color2Selected) {
+      this.customColorsInitialized = true;
+    }
   }
 
   updateSectionVisibility() {
     const isSolid = this.selectedEffect === 0;
+    const isCustomColors = this.selectedPalette === 3;
     
     // Show/hide sections based on whether solid is selected
     document.getElementById('solidColorSection').style.display = isSolid ? 'block' : 'none';
     document.getElementById('paletteSection').style.display = isSolid ? 'none' : 'block';
     document.getElementById('controlsSection').style.display = isSolid ? 'none' : 'block';
+    document.getElementById('customColorsSection').style.display = isCustomColors ? 'block' : 'none';
   }
 
   createGradient(colors) {
@@ -359,13 +473,27 @@ class PumpkinPainter {
 
     if (this.selectedPalette !== null) {
       props.pal = this.selectedPalette;
+      
+      // If palette is "Colors 1&2" (id 3), send custom colors
+      if (this.selectedPalette === 3) {
+        const rgb1 = hexToRgb(this.customColor1);
+        const rgb2 = hexToRgb(this.customColor2);
+        if (rgb1 && rgb2) {
+          props.col = [rgb1, rgb2];
+        }
+      }
     }
 
     // Update pumpkin visualization immediately before API call
     if (this.selectedPalette !== null) {
       const palette = this.config.palettes.palettes.find(p => p.id === this.selectedPalette);
       if (palette && palette.colors) {
-        this.updatePumpkinVisualization(this.selectedFeature, palette.colors);
+        // For Colors 1&2, use the custom colors for visualization
+        if (this.selectedPalette === 3) {
+          this.updatePumpkinVisualization(this.selectedFeature, [this.customColor1, this.customColor2]);
+        } else {
+          this.updatePumpkinVisualization(this.selectedFeature, palette.colors);
+        }
       }
     }
 
@@ -454,11 +582,17 @@ class PumpkinPainter {
   setupScreensaver() {
     const screensaver = document.getElementById('screensaver');
     
-    // Click/tap anywhere on screensaver to dismiss and reset everything
+    // Click/tap anywhere on screensaver to dismiss
     screensaver.addEventListener('click', () => {
+      // If we should reset, do it before hiding screensaver
+      if (this.shouldResetOnNextTap) {
+        this.clearPumpkinVisualization();
+        this.resetToPreset(true);
+        this.shouldResetOnNextTap = false;
+      }
+      
       this.hideScreensaver();
       this.resetInactivityTimer();
-      this.resetResetTimer();
     });
     
     // Track user activity to reset inactivity timer (but NOT reset timer)
@@ -557,8 +691,10 @@ class PumpkinPainter {
       this.inactivityTimeout = null;
     }
     
-    // Start the 5-minute timer to reset to preset
-    this.resetResetTimer();
+    // Start timer - after 10 seconds, mark that we should reset on next tap
+    this.resetTimeout = setTimeout(() => {
+      this.shouldResetOnNextTap = true;
+    }, this.resetDelay);
   }
 
   hideScreensaver() {
@@ -566,11 +702,14 @@ class PumpkinPainter {
     screensaver.classList.add('hidden');
     this.screensaverActive = false;
     
-    // Clear the reset timer since user is active
+    // Clear the reset timer since user is active (tapped within 10 seconds)
     if (this.resetTimeout) {
       clearTimeout(this.resetTimeout);
       this.resetTimeout = null;
     }
+    
+    // Reset the flag since they tapped within the window
+    this.shouldResetOnNextTap = false;
     
     // Start the inactivity timer
     this.resetInactivityTimer();
@@ -588,21 +727,6 @@ class PumpkinPainter {
     }, this.inactivityDelay);
   }
 
-  resetResetTimer() {
-    // Clear existing timer
-    if (this.resetTimeout) {
-      clearTimeout(this.resetTimeout);
-    }
-    
-    // Set new timer to reset after 5 minutes
-    this.resetTimeout = setTimeout(() => {
-      // Clear pumpkin visualizations
-      this.clearPumpkinVisualization();
-      
-      // Reset the pumpkin to preset (silently, no toasts)
-      this.resetToPreset(true);
-    }, this.resetDelay);
-  }
 
   updatePumpkinVisualization(featureName, colors) {
     console.log('Updating visualization for:', featureName, 'with colors:', colors);
