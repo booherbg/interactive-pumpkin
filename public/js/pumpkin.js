@@ -461,6 +461,17 @@ class PumpkinPainter {
       this.resetResetTimer();
     });
     
+    // Track user activity to reset inactivity timer (but NOT reset timer)
+    const activityEvents = ['mousedown', 'touchstart', 'click'];
+    activityEvents.forEach(event => {
+      document.addEventListener(event, (e) => {
+        // Only reset inactivity if not clicking on screensaver
+        if (!this.screensaverActive && !e.target.closest('#screensaver')) {
+          this.resetInactivityTimer();
+        }
+      });
+    });
+    
     // Setup bouncing pumpkins
     this.setupBouncingPumpkins();
   }

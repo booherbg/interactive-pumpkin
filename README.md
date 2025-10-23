@@ -26,8 +26,8 @@ An interactive web application for controlling a Halloween pumpkin LED installat
 
 ### 1. Prerequisites
 
-- Node.js 18+ installed on your Raspberry Pi
-- WLED controllers on your local network
+- Node.js 18+ installed on your Raspberry Pi (or development machine)
+- WLED controllers on your local network (or use simulator mode for development)
 - iPad or computer on the same network
 
 ### 2. Installation
@@ -39,6 +39,24 @@ cd pumpkin-painter
 # Install dependencies
 npm install
 ```
+
+### 2.5. Development Mode (No Hardware Required!)
+
+Want to develop without physical LEDs? Use the built-in simulator:
+
+```bash
+# Start with simulator mode
+npm run start:sim
+
+# Or with auto-reload for development
+npm run dev:sim
+```
+
+Then open:
+- **Controller App**: http://localhost:3000
+- **Simulator Visualization**: http://localhost:8080/simulator
+
+The simulator shows all segment states in real-time and accepts the same WLED API calls as real hardware!
 
 ### 3. Configuration
 

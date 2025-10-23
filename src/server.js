@@ -4,13 +4,18 @@ import { fileURLToPath } from 'url';
 import { loadConfig } from './config-loader.js';
 import { ControllerManager } from './wled-client.js';
 import { setupRoutes } from './api-routes.js';
+import { startSimulator } from './simulator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Configuration
 const PORT = process.env.PORT || 3000;
+const SIMULATOR_PORT = process.env.SIMULATOR_PORT || 8080;
 const HOST = process.env.HOST || '0.0.0.0';
+
+// Parse command line arguments
+const USE_SIMULATOR = process.argv.includes('--use-simulator');
 
 // Initialize Express app
 const app = express();
@@ -50,21 +55,37 @@ async function startServer() {
     console.log(`✓ ${config.effects.effects.length} effects available`);
     console.log(`✓ ${config.palettes.palettes.length} palettes available\n`);
 
+    // Start simulator if requested
+    if (USE_SIMULATOR) {
+      console.log('🎮 SIMULATOR MODE ENABLED\n');
+      await startSimulator(config.pumpkin, SIMULATOR_PORT);
+      
+      // Update controller IPs to point to simulator
+      Object.keys(config.pumpkin.controllers).forEach(key => {
+        config.pumpkin.controllers[key].ip = `localhost:${SIMULATOR_PORT}/simulator/${key}`;
+      });
+      console.log('');
+    }
+
     // Initialize controller manager
     console.log('🔌 Initializing WLED controllers...');
-    const controllerManager = new ControllerManager(config);
+    const controllerManager = new ControllerManager(config, !USE_SIMULATOR);
     
-    // Test connectivity to controllers
-    const pingResults = await controllerManager.pingAll();
-    for (const [key, result] of Object.entries(pingResults)) {
-      const controller = config.pumpkin.controllers[key];
-      if (result.online) {
-        console.log(`✓ ${controller.name} (${controller.ip}) - Online`);
-        console.log(`  WLED Version: ${result.version}`);
-      } else {
-        console.log(`✗ ${controller.name} (${controller.ip}) - Offline`);
-        console.log(`  Error: ${result.error}`);
+    if (!USE_SIMULATOR) {
+      // Test connectivity to controllers (skip in simulator mode)
+      const pingResults = await controllerManager.pingAll();
+      for (const [key, result] of Object.entries(pingResults)) {
+        const controller = config.pumpkin.controllers[key];
+        if (result.online) {
+          console.log(`✓ ${controller.name} (${controller.ip}) - Online`);
+          console.log(`  WLED Version: ${result.version}`);
+        } else {
+          console.log(`✗ ${controller.name} (${controller.ip}) - Offline`);
+          console.log(`  Error: ${result.error}`);
+        }
       }
+    } else {
+      console.log('✓ Using simulator endpoints (hardware not required)');
     }
     console.log('');
 
@@ -76,6 +97,11 @@ async function startServer() {
       console.log('🚀 Server started successfully!\n');
       console.log(`   Local:   http://localhost:${PORT}`);
       console.log(`   Network: http://${HOST}:${PORT}`);
+      
+      if (USE_SIMULATOR) {
+        console.log(`\n🎮 Simulator: http://localhost:${SIMULATOR_PORT}/simulator`);
+      }
+      
       console.log('\n📱 Open this URL on your iPad to control the pumpkin!\n');
       console.log('Available endpoints:');
       console.log('   GET  /api/config        - Get configuration');
