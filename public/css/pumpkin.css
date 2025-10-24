@@ -367,6 +367,28 @@ header h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
   gap: 8px;
+  max-height: 200px; /* Roughly 3 rows */
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Custom scrollbar for effect grid */
+.effect-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.effect-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.effect-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.effect-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .effect-btn {
@@ -412,6 +434,28 @@ header h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
   gap: 8px;
+  max-height: 240px; /* Roughly 3 rows */
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* Custom scrollbar for palette grid */
+.palette-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.palette-grid::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.palette-grid::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.palette-grid::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .palette-btn {

@@ -513,14 +513,15 @@ function generateVisualizationHTML(simulators, pumpkinConfig) {
           2: 'leftEye',
           3: 'rightEye',
           4: 'nose',
-          5: 'mouthTop',
-          6: 'mouthBottom',
-          7: 'pumpkinShell'
+          5: 'allMouth',
+          6: 'pumpkinShell'
         },
         'pumpkin_24v': {
+          0: 'innerFiller',
+          1: 'innerFiller',
           2: 'innerFiller',
-          3: 'mouthFiller',
-          4: 'skyFiller'
+          3: 'innerFiller',
+          4: 'allMouth'
         }
       };
       
@@ -543,11 +544,6 @@ function generateVisualizationHTML(simulators, pumpkinConfig) {
           
           // Find the SVG element
           let element = svg.querySelector(\`[data-feature="\${featureName}"]\`);
-          
-          // Special handling for mouth (use allMouth if mouthTop/Bottom not found)
-          if (!element && (featureName === 'mouthTop' || featureName === 'mouthBottom')) {
-            element = svg.querySelector('[data-feature="allMouth"]');
-          }
           
           if (!element) return;
           

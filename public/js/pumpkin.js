@@ -295,8 +295,8 @@ class PumpkinPainter {
         // Update section visibility (to show/hide custom colors)
         this.updateSectionVisibility();
         
-        // Apply immediately (unless it's Colors 1&2, which needs custom colors first)
-        if (palette.id !== 3) {
+        // Apply immediately (unless it's Colors 1&2 or Color Gradient, which need custom colors first)
+        if (palette.id !== 3 && palette.id !== 4) {
           this.applySettings();
         }
       });
@@ -437,7 +437,7 @@ class PumpkinPainter {
 
   updateSectionVisibility() {
     const isSolid = this.selectedEffect === 0;
-    const isCustomColors = this.selectedPalette === 3;
+    const isCustomColors = this.selectedPalette === 3 || this.selectedPalette === 4; // Colors 1&2 or Color Gradient
     
     // Show/hide sections based on whether solid is selected
     document.getElementById('solidColorSection').style.display = isSolid ? 'block' : 'none';
@@ -474,8 +474,8 @@ class PumpkinPainter {
     if (this.selectedPalette !== null) {
       props.pal = this.selectedPalette;
       
-      // If palette is "Colors 1&2" (id 3), send custom colors
-      if (this.selectedPalette === 3) {
+      // If palette is "Colors 1&2" (id 3) or "Color Gradient" (id 4), send custom colors
+      if (this.selectedPalette === 3 || this.selectedPalette === 4) {
         const rgb1 = hexToRgb(this.customColor1);
         const rgb2 = hexToRgb(this.customColor2);
         if (rgb1 && rgb2) {
@@ -488,8 +488,8 @@ class PumpkinPainter {
     if (this.selectedPalette !== null) {
       const palette = this.config.palettes.palettes.find(p => p.id === this.selectedPalette);
       if (palette && palette.colors) {
-        // For Colors 1&2, use the custom colors for visualization
-        if (this.selectedPalette === 3) {
+        // For Colors 1&2 or Color Gradient, use the custom colors for visualization
+        if (this.selectedPalette === 3 || this.selectedPalette === 4) {
           this.updatePumpkinVisualization(this.selectedFeature, [this.customColor1, this.customColor2]);
         } else {
           this.updatePumpkinVisualization(this.selectedFeature, palette.colors);

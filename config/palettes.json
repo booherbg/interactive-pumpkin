@@ -10,7 +10,10 @@
   "palettes": [
     { "id": 0, "name": "Default", "colors": ["#000000"], "show": true },
     { "id": 1, "name": "Random Cycle", "colors": ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"], "show": true },
+    { "id": 2, "name": "Color 1", "colors": ["#FF6600"], "show": false },
     { "id": 3, "name": "Colors 1&2", "colors": ["#FF6600", "#0000FF"], "show": true },
+    { "id": 4, "name": "Color Gradient", "colors": ["#FF6600", "#0000FF"], "show": true },
+    { "id": 5, "name": "Colors Only", "colors": ["#FF6600", "#00FF00", "#0000FF"], "show": false },
     
     { "id": 11, "name": "Rainbow", "colors": ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#8B00FF"], "show": true },
     { "id": 12, "name": "Rainbow Bands", "colors": ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#8B00FF"], "show": true },
@@ -32,26 +35,26 @@
     { "id": 50, "name": "Aurora", "colors": ["#00FF00", "#00FFAA", "#00AAFF", "#AA00FF", "#FF00AA"], "show": true },
     
     { "id": 7, "name": "Cloud", "colors": ["#6699CC", "#99BBDD", "#BBDDEE", "#DDEEFF"], "show": true },
-    { "id": 20, "name": "Pastel", "colors": ["#FFB6C1", "#FFDAB9", "#E0BBE4", "#B4E4FF", "#C3F0CA"], "show": false },
+    { "id": 20, "name": "Pastel", "colors": ["#FFB6C1", "#FFDAB9", "#E0BBE4", "#B4E4FF", "#C3F0CA"], "show": true },
     
-    { "id": 40, "name": "Magenta", "colors": ["#660066", "#990099", "#CC00CC", "#FF00FF", "#FF66FF"], "show": false },
-    { "id": 38, "name": "Light Pink", "colors": ["#FFCCDD", "#FFDDEE", "#FFEEFF"], "show": false },
-    { "id": 57, "name": "Candy", "colors": ["#FF1493", "#FF69B4", "#FFB6C1", "#FFC0CB"], "show": false },
-    { "id": 49, "name": "Sakura", "colors": ["#FFB7C5", "#FFC0CB", "#FF69B4", "#FF1493"], "show": false },
+    { "id": 40, "name": "Magenta", "colors": ["#660066", "#990099", "#CC00CC", "#FF00FF", "#FF66FF"], "show": true },
+    { "id": 38, "name": "Light Pink", "colors": ["#FFCCDD", "#FFDDEE", "#FFEEFF"], "show": true },
+    { "id": 57, "name": "Candy", "colors": ["#FF1493", "#FF69B4", "#FFB6C1", "#FFC0CB"], "show": true },
+    { "id": 49, "name": "Sakura", "colors": ["#FFB7C5", "#FFC0CB", "#FF69B4", "#FF1493"], "show": true },
     
-    { "id": 16, "name": "Red & Blue", "colors": ["#FF0000", "#000000", "#0000FF"], "show": false },
-    { "id": 44, "name": "Orange & Teal", "colors": ["#FF6600", "#000000", "#00CCCC"], "show": false },
+    { "id": 16, "name": "Red & Blue", "colors": ["#FF0000", "#000000", "#0000FF"], "show": true },
+    { "id": 44, "name": "Orange & Teal", "colors": ["#FF6600", "#000000", "#00CCCC"], "show": true },
     
-    { "id": 48, "name": "C9", "colors": ["#FF0000", "#FF8800", "#FFFF00", "#00FF00", "#0000FF"], "show": false },
-    { "id": 52, "name": "C9 2", "colors": ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"], "show": false },
+    { "id": 48, "name": "C9", "colors": ["#FF0000", "#FF8800", "#FFFF00", "#00FF00", "#0000FF"], "show": true },
+    { "id": 52, "name": "C9 2", "colors": ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"], "show": true },
     
-    { "id": 15, "name": "Breeze", "colors": ["#33CCCC", "#55DDDD", "#77EEEE"], "show": false },
-    { "id": 22, "name": "Beach", "colors": ["#FFD700", "#FFA500", "#66CCFF", "#00AACC"], "show": false },
-    { "id": 23, "name": "Vintage", "colors": ["#8B4513", "#A0522D", "#D2691E", "#DEB887"], "show": false },
-    { "id": 14, "name": "Rivendell", "colors": ["#4169E1", "#6495ED", "#87CEEB", "#B0C4DE"], "show": false },
+    { "id": 15, "name": "Breeze", "colors": ["#33CCCC", "#55DDDD", "#77EEEE"], "show": true },
+    { "id": 22, "name": "Beach", "colors": ["#FFD700", "#FFA500", "#66CCFF", "#00AACC"], "show": true },
+    { "id": 23, "name": "Vintage", "colors": ["#8B4513", "#A0522D", "#D2691E", "#DEB887"], "show": true },
+    { "id": 14, "name": "Rivendell", "colors": ["#4169E1", "#6495ED", "#87CEEB", "#B0C4DE"], "show": true },
     
-    { "id": 18, "name": "Analogous", "colors": ["#FF0000", "#FF8800", "#FFFF00"], "show": false },
-    { "id": 19, "name": "Splash", "colors": ["#00FFFF", "#FF00FF", "#FFFF00", "#00FF00"], "show": false },
+    { "id": 18, "name": "Analogous", "colors": ["#FF0000", "#FF8800", "#FFFF00"], "show": true },
+    { "id": 19, "name": "Splash", "colors": ["#00FFFF", "#FF00FF", "#FFFF00", "#00FF00"], "show": true },
     
     { "id": 17, "name": "Yellowout", "colors": ["#664400", "#AA7700", "#FFAA00", "#FFDD00", "#FFFF00"], "show": true },
     { "id": 24, "name": "Departure", "colors": ["#000033", "#330066", "#660099", "#9900CC", "#CC00FF"], "show": true },
@@ -60,7 +63,7 @@
     { "id": 27, "name": "Sherbet", "colors": ["#FF6699", "#FFAA88", "#FFDD77", "#EEFFAA", "#CCFFCC"], "show": true },
     
     { "id": 28, "name": "Hult", "colors": ["#000044", "#440066", "#880088", "#CC0088", "#FF0066"], "show": true },
-    { "id": 29, "name": "Hult 64", "colors": ["#220044", "#550066", "#880088", "#BB0088", "#EE0066"], "show": false },
+    { "id": 29, "name": "Hult 64", "colors": ["#220044", "#550066", "#880088", "#BB0088", "#EE0066"], "show": true },
     { "id": 30, "name": "Drywet", "colors": ["#AA5500", "#DDAA33", "#FFFFAA", "#66DDFF", "#0088CC"], "show": true },
     
     { "id": 31, "name": "Jul", "colors": ["#FF0000", "#00FF00", "#FFFFFF", "#FF0000", "#00FF00"], "show": true },
@@ -76,8 +79,24 @@
     { "id": 45, "name": "Tiamat", "colors": ["#000033", "#330055", "#660077", "#990099", "#CC00BB"], "show": true },
     { "id": 46, "name": "April Night", "colors": ["#000022", "#220044", "#440088", "#6600CC", "#8800FF"], "show": true },
     
-    { "id": 53, "name": "C9 New", "colors": ["#FF0000", "#FF6600", "#FFCC00", "#00FF00", "#0066FF", "#8800FF"], "show": false },
-    { "id": 54, "name": "Temperature", "colors": ["#0000FF", "#0066FF", "#00CCFF", "#FFAA00", "#FF0000"], "show": false }
+    { "id": 53, "name": "C9 New", "colors": ["#FF0000", "#FF6600", "#FFCC00", "#00FF00", "#0066FF", "#8800FF"], "show": true },
+    { "id": 54, "name": "Temperature", "colors": ["#0000FF", "#0066FF", "#00CCFF", "#FFAA00", "#FF0000"], "show": true },
+    { "id": 55, "name": "Aurora 2", "colors": ["#00FF00", "#00FFAA", "#00DDFF", "#AA88FF", "#FF66AA"], "show": true },
+    { "id": 56, "name": "Retro Clown", "colors": ["#FFFF00", "#FF00FF", "#00FFFF", "#FF0000"], "show": true },
+    
+    { "id": 58, "name": "Toxy Reaf", "colors": ["#00FFAA", "#00DDCC", "#00AAFF", "#8800FF", "#FF00AA"], "show": true },
+    { "id": 59, "name": "Fairy Reaf", "colors": ["#00FFDD", "#00DDFF", "#66AAFF", "#AA66FF", "#FF66DD"], "show": true },
+    { "id": 60, "name": "Semi Blue", "colors": ["#000044", "#000088", "#0044DD", "#0088FF", "#00CCFF"], "show": true },
+    { "id": 61, "name": "Pink Candy", "colors": ["#FFFFFF", "#FFB6C1", "#FF69B4", "#FF1493", "#8B008B"], "show": true },
+    { "id": 62, "name": "Red Reaf", "colors": ["#0066FF", "#0099FF", "#00CCFF", "#FF6600", "#FF0000"], "show": true },
+    { "id": 63, "name": "Aqua Flash", "colors": ["#00FFFF", "#00DDDD", "#00BBBB", "#FFFF00", "#FFFFFF"], "show": true },
+    { "id": 64, "name": "Yelblu Hot", "colors": ["#FFFF00", "#FFAA00", "#FF0000", "#0000FF", "#0088FF"], "show": true },
+    { "id": 65, "name": "Lite Light", "colors": ["#FFFFFF", "#EEDDFF", "#DDBBFF", "#AA88CC"], "show": true },
+    
+    { "id": 67, "name": "Blink Red", "colors": ["#000044", "#000088", "#4400AA", "#8800FF", "#FF00FF"], "show": true },
+    { "id": 68, "name": "Red Shift", "colors": ["#FFFF00", "#FFAA00", "#FF5500", "#FF00AA", "#AA00FF", "#0000FF"], "show": true },
+    { "id": 69, "name": "Red Tide", "colors": ["#FFFF00", "#FFAA00", "#FF5500", "#FF0000", "#CC0000"], "show": true },
+    { "id": 70, "name": "Candy 2", "colors": ["#FFFF00", "#FFCC66", "#FF9966", "#0099FF", "#6666FF"], "show": true }
   ]
 }
 
