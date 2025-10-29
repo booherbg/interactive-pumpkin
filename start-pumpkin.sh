@@ -4,4 +4,5 @@ export NVM_DIR="/home/led-dreams/.nvm"
 
 cd /home/led-dreams/interactive-pumpkin/
 git pull origin master
+npm install
 npm start
