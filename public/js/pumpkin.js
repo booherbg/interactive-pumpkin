@@ -80,16 +80,13 @@ class PumpkinPainter {
     this.solidColors = [
       { name: 'Red', color: '#FF0000', icon: '🔴' },
       { name: 'Orange', color: '#FF6600', icon: '🟠' },
-      { name: 'Yellow', color: '#FFFF00', icon: '🟡' },
+      { name: 'Yellow', color: '#FFCC00', icon: '🟡' },
       { name: 'Lime', color: '#00FF00', icon: '🟢' },
       { name: 'Green', color: '#008000', icon: '💚' },
-      { name: 'Cyan', color: '#00FFFF', icon: '🔵' },
+      { name: 'Cyan', color: '#0099FF', icon: '🔵' },
       { name: 'Blue', color: '#0000FF', icon: '🔵' },
-      { name: 'Purple', color: '#800080', icon: '🟣' },
-      { name: 'Magenta', color: '#FF00FF', icon: '💜' },
+      { name: 'Magenta', color: '#CC00CC', icon: '💜' },
       { name: 'Pink', color: '#FF1493', icon: '💗' },
-      { name: 'White', color: '#FFFFFF', icon: '⚪' },
-      { name: 'Warm White', color: '#FFE4B5', icon: '🤍' },
     ];
     
     // Create debounced apply function
@@ -188,6 +185,16 @@ class PumpkinPainter {
     // Reset button
     document.getElementById('resetBtn').addEventListener('click', () => {
       this.resetToPreset();
+    });
+
+    // Random effect button
+    document.getElementById('randomEffectBtn').addEventListener('click', () => {
+      this.selectRandomEffect();
+    });
+
+    // Random palette button
+    document.getElementById('randomPaletteBtn').addEventListener('click', () => {
+      this.selectRandomPalette();
     });
   }
 
@@ -959,6 +966,54 @@ class PumpkinPainter {
     });
     
     this.activeFeatures = {};
+  }
+
+  selectRandomEffect() {
+    // Get all visible effects (where show is not false)
+    const visibleEffects = this.config.effects.effects.filter(effect => effect.show !== false);
+    
+    if (visibleEffects.length === 0) {
+      this.showToast('❌ No effects available');
+      return;
+    }
+    
+    // Pick a random effect
+    const randomEffect = visibleEffects[Math.floor(Math.random() * visibleEffects.length)];
+    
+    // Find the corresponding button and click it
+    const buttons = document.querySelectorAll('.effect-btn');
+    buttons.forEach(btn => {
+      const effectId = parseInt(btn.dataset.effectId);
+      if (effectId === randomEffect.id) {
+        btn.click();
+      }
+    });
+    
+    this.showToast(`🎲 Picked: ${randomEffect.name}`);
+  }
+
+  selectRandomPalette() {
+    // Get all visible palettes (where show is not false)
+    const visiblePalettes = this.config.palettes.palettes.filter(palette => palette.show !== false);
+    
+    if (visiblePalettes.length === 0) {
+      this.showToast('❌ No palettes available');
+      return;
+    }
+    
+    // Pick a random palette
+    const randomPalette = visiblePalettes[Math.floor(Math.random() * visiblePalettes.length)];
+    
+    // Find the corresponding button and click it
+    const buttons = document.querySelectorAll('.palette-btn');
+    buttons.forEach(btn => {
+      const paletteName = btn.querySelector('.palette-name').textContent;
+      if (paletteName === randomPalette.name) {
+        btn.click();
+      }
+    });
+    
+    this.showToast(`🎨 Picked: ${randomPalette.name}`);
   }
 }
 
