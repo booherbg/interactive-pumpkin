@@ -200,6 +200,9 @@ class PumpkinPainter {
     this.selectedColor = null;
     this.customColorsInitialized = false; // Reset when opening modal
     
+    // Reset sliders to center values when opening modal
+    this.resetSlidersToCenter();
+    
     // Set modal title
     document.getElementById('modalTitle').textContent = `Control ${label}`;
     
@@ -224,44 +227,79 @@ class PumpkinPainter {
   }
 
   populateEffects() {
-    const grid = document.getElementById('effectGrid');
-    grid.innerHTML = '';
+    const container = document.getElementById('effectCategories');
+    container.innerHTML = '';
     
     // Filter effects where show is not false (default to true if not specified)
     const visibleEffects = this.config.effects.effects.filter(effect => effect.show !== false);
     
+    // Group effects by category
+    const effectsByCategory = {};
     visibleEffects.forEach(effect => {
-      const btn = document.createElement('button');
-      btn.className = 'effect-btn';
-      btn.dataset.effectId = effect.id;
-      
-      // Mark solid effect (id=0) as active by default
-      if (effect.id === 0) {
-        btn.classList.add('active');
+      const category = effect.category || 'other';
+      if (!effectsByCategory[category]) {
+        effectsByCategory[category] = [];
       }
+      effectsByCategory[category].push(effect);
+    });
+    
+    // Create category sections
+    Object.keys(effectsByCategory).forEach(categoryKey => {
+      const categoryDiv = document.createElement('div');
+      categoryDiv.className = 'effect-category';
       
-      btn.innerHTML = `
-        <div class="effect-icon">${effect.icon}</div>
-        <div class="effect-name">${effect.name}</div>
-      `;
+      const categoryTitle = document.createElement('div');
+      categoryTitle.className = 'effect-category-title';
+      categoryTitle.textContent = this.config.effects.categories[categoryKey] || 'Other';
+      categoryDiv.appendChild(categoryTitle);
       
-      btn.addEventListener('click', () => {
-        // Remove active from all
-        grid.querySelectorAll('.effect-btn').forEach(b => b.classList.remove('active'));
-        // Add active to this one
-        btn.classList.add('active');
-        this.selectedEffect = effect.id;
+      const grid = document.createElement('div');
+      grid.className = 'effect-grid';
+      
+      effectsByCategory[categoryKey].forEach(effect => {
+        const btn = document.createElement('button');
+        btn.className = 'effect-btn';
+        btn.dataset.effectId = effect.id;
         
-        // Update section visibility
-        this.updateSectionVisibility();
-        
-        // If solid effect, don't apply until color is selected
-        if (effect.id !== 0) {
-          this.applySettings();
+        // Mark solid effect (id=0) as active by default
+        if (effect.id === 0) {
+          btn.classList.add('active');
         }
+        
+        btn.innerHTML = `
+          <div class="effect-name">${effect.name}</div>
+        `;
+        
+        btn.addEventListener('click', () => {
+          // Remove active from all effect buttons
+          container.querySelectorAll('.effect-btn').forEach(b => b.classList.remove('active'));
+          // Add active to this one
+          btn.classList.add('active');
+          this.selectedEffect = effect.id;
+          
+          // Reset sliders to center values when selecting a new effect
+          this.resetSlidersToCenter();
+          
+          // If no palette is selected yet, default to Random Cycle
+          if (this.selectedPalette === null) {
+            this.selectedPalette = 1; // Random Cycle
+            this.updatePaletteSelection();
+          }
+          
+          // Update section visibility
+          this.updateSectionVisibility();
+          
+          // If solid effect, don't apply until color is selected
+          if (effect.id !== 0) {
+            this.applySettings();
+          }
+        });
+        
+        grid.appendChild(btn);
       });
       
-      grid.appendChild(btn);
+      categoryDiv.appendChild(grid);
+      container.appendChild(categoryDiv);
     });
   }
 
@@ -444,6 +482,44 @@ class PumpkinPainter {
     document.getElementById('paletteSection').style.display = isSolid ? 'none' : 'block';
     document.getElementById('controlsSection').style.display = isSolid ? 'none' : 'block';
     document.getElementById('customColorsSection').style.display = isCustomColors ? 'block' : 'none';
+  }
+
+  resetSlidersToCenter() {
+    // Reset speed and intensity to center values (128)
+    this.speed = 128;
+    this.intensity = 128;
+    
+    // Update slider elements
+    const speedSlider = document.getElementById('speedSlider');
+    const intensitySlider = document.getElementById('intensitySlider');
+    const speedValue = document.getElementById('speedValue');
+    const intensityValue = document.getElementById('intensityValue');
+    
+    if (speedSlider && speedValue) {
+      speedSlider.value = 128;
+      speedValue.textContent = '128';
+    }
+    
+    if (intensitySlider && intensityValue) {
+      intensitySlider.value = 128;
+      intensityValue.textContent = '128';
+    }
+  }
+
+  updatePaletteSelection() {
+    // Update palette button active states
+    document.querySelectorAll('.palette-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    // Mark Random Cycle as active
+    const paletteButtons = document.querySelectorAll('.palette-btn');
+    paletteButtons.forEach(btn => {
+      const paletteName = btn.querySelector('.palette-name').textContent;
+      if (paletteName === 'Random Cycle') {
+        btn.classList.add('active');
+      }
+    });
   }
 
   createGradient(colors) {

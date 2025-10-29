@@ -319,12 +319,12 @@ header h1 {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
+  padding: 8px 16px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header h2 {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: var(--color-primary);
 }
 
@@ -332,10 +332,10 @@ header h1 {
   background: none;
   border: none;
   color: var(--color-text);
-  font-size: 2rem;
+  font-size: 1.8rem;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -348,46 +348,65 @@ header h1 {
 }
 
 .modal-body {
-  padding: 16px;
+  padding: 8px 16px 12px;
 }
 
 .modal-section {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .modal-section h3 {
-  font-size: 1rem;
-  margin-bottom: 10px;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
   color: var(--color-text-secondary);
   font-weight: 600;
 }
 
 /* Effect Grid */
-.effect-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-  gap: 8px;
-  max-height: 200px; /* Roughly 3 rows */
+.effect-categories {
+  max-height: 160px;
   overflow-y: auto;
   padding-right: 4px;
 }
 
-/* Custom scrollbar for effect grid */
-.effect-grid::-webkit-scrollbar {
+.effect-category {
+  margin-bottom: 12px;
+}
+
+.effect-category:last-child {
+  margin-bottom: 0;
+}
+
+.effect-category-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: 6px;
+  padding: 0 4px;
+}
+
+.effect-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+}
+
+/* Custom scrollbar for effect categories */
+.effect-categories::-webkit-scrollbar {
   width: 8px;
 }
 
-.effect-grid::-webkit-scrollbar-track {
+.effect-categories::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 4px;
 }
 
-.effect-grid::-webkit-scrollbar-thumb {
+.effect-categories::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 4px;
 }
 
-.effect-grid::-webkit-scrollbar-thumb:hover {
+.effect-categories::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
@@ -434,7 +453,7 @@ header h1 {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
   gap: 8px;
-  max-height: 240px; /* Roughly 3 rows */
+  max-height: 200px; /* Reduced from 240px */
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -560,14 +579,18 @@ header h1 {
 
 /* Controls */
 .controls-section {
-  margin: 16px 0;
+  margin: 8px 0 0;
   padding: 12px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(255, 165, 0, 0.08);
+  border: 1px solid rgba(255, 165, 0, 0.15);
   border-radius: 8px;
+  position: sticky;
+  bottom: 0;
+  backdrop-filter: blur(5px);
 }
 
 .slider-group {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .slider-group:last-child {
@@ -579,49 +602,56 @@ header h1 {
   justify-content: space-between;
   margin-bottom: 6px;
   font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text);
+  font-weight: 500;
 }
 
 .slider-value {
   color: var(--color-primary);
   font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .slider {
   width: 100%;
-  height: 8px;
-  border-radius: 4px;
+  height: 6px;
+  border-radius: 3px;
   background: rgba(255, 255, 255, 0.1);
   outline: none;
   -webkit-appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: var(--color-primary);
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 1px 4px rgba(255, 165, 0, 0.2);
 }
 
 .slider::-webkit-slider-thumb:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
+  box-shadow: 0 2px 6px rgba(255, 165, 0, 0.3);
 }
 
 .slider::-moz-range-thumb {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: var(--color-primary);
   cursor: pointer;
   border: none;
-  transition: transform 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 1px 4px rgba(255, 165, 0, 0.2);
 }
 
 .slider::-moz-range-thumb:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
+  box-shadow: 0 2px 6px rgba(255, 165, 0, 0.3);
 }
 
 /* Apply Button */

@@ -8,18 +8,18 @@
     "Set 'show: false' to hide a palette from the UI without losing its configuration"
   ],
   "palettes": [
-    { "id": 0, "name": "Default", "colors": ["#000000"], "show": true },
+    { "id": 0, "name": "Default", "colors": ["#000000"], "show": false },
     { "id": 1, "name": "Random Cycle", "colors": ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"], "show": true },
-    { "id": 2, "name": "Color 1", "colors": ["#FF6600"], "show": false },
-    { "id": 3, "name": "Colors 1&2", "colors": ["#FF6600", "#0000FF"], "show": true },
-    { "id": 4, "name": "Color Gradient", "colors": ["#FF6600", "#0000FF"], "show": true },
+    { "id": 2, "name": "Single Color", "colors": ["#FF6600"], "show": false },
+    { "id": 3, "name": "Two Colors", "colors": ["#FF6600", "#0000FF"], "show": true },
+    { "id": 4, "name": "2-Color Gradient", "colors": ["#FF6600", "#0000FF"], "show": true },
     { "id": 5, "name": "Colors Only", "colors": ["#FF6600", "#00FF00", "#0000FF"], "show": false },
     
     { "id": 11, "name": "Rainbow", "colors": ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#8B00FF"], "show": true },
-    { "id": 12, "name": "Rainbow Bands", "colors": ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#00FFFF", "#0000FF", "#8B00FF"], "show": true },
+    { "id": 12, "name": "Rainbow Bands", "colors": ["#FF0000", "#FF7F00", "#000000", "#00FF00", "#000000", "#0000FF", "#8B00FF"], "show": true },
     
     { "id": 35, "name": "Fire", "colors": ["#000000", "#330000", "#990000", "#FF0000", "#FF6600", "#FFCC00"], "show": true },
-    { "id": 8, "name": "Lava", "colors": ["#000000", "#440000", "#880000", "#CC0000", "#FF4400", "#FF8800"], "show": true },
+    { "id": 8, "name": "Lava", "colors": ["#FFFFFF", "#440000", "#880000", "#CC0000", "#FF4400", "#FF8800"], "show": true },
     { "id": 13, "name": "Sunset", "colors": ["#660000", "#CC3300", "#FF6600", "#FF9933", "#FFCC66"], "show": true },
     { "id": 21, "name": "Sunset 2", "colors": ["#440000", "#880033", "#CC3366", "#FF6699", "#FFCCCC"], "show": true },
     
