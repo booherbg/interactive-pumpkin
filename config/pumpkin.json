@@ -2,12 +2,12 @@
   "name": "Halloween Pumpkin 2025",
   "controllers": {
     "pumpkin_12v": {
-      "ip": "10.0.1.100",
+      "ip": "10.0.1.140",
       "name": "12v Controller (Main Pumpkin)",
       "segments": 8
     },
     "pumpkin_24v": {
-      "ip": "10.0.1.101",
+      "ip": "10.0.1.141",
       "name": "24v Controller (Filler)",
       "segments": 5
     }
@@ -101,7 +101,8 @@
         { "controller": "pumpkin_12v", "segment": 2 },
         { "controller": "pumpkin_12v", "segment": 3 },
         { "controller": "pumpkin_12v", "segment": 4 },
-        { "controller": "pumpkin_12v", "segment": 5 }
+        { "controller": "pumpkin_12v", "segment": 5 },
+        { "controller": "pumpkin_24v", "segment": 0 }
       ],
       "color": "#FF6600"
     },
@@ -126,6 +127,7 @@
         { "controller": "pumpkin_12v", "segment": 3 },
         { "controller": "pumpkin_12v", "segment": 4 },
         { "controller": "pumpkin_12v", "segment": 5 },
+        { "controller": "pumpkin_12v", "segment": 6 },
         { "controller": "pumpkin_24v", "segment": 0 },
         { "controller": "pumpkin_24v", "segment": 1 },
         { "controller": "pumpkin_24v", "segment": 2 },
