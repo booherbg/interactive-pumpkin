@@ -329,6 +329,28 @@ header h1 {
   margin-bottom: 4px;
 }
 
+/* Tablet-specific modal header adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .modal-header h2 {
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+  
+  .modal-header {
+    padding: 6px 12px;
+  }
+  
+  .random-btn {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+  
+  .modal-subtitle {
+    gap: 6px;
+    margin-top: 2px;
+  }
+}
+
 .modal-subtitle {
   margin-top: 4px;
   display: flex;
@@ -382,6 +404,13 @@ header h1 {
   padding: 8px 16px 12px;
 }
 
+/* Tablet-specific modal body adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .modal-body {
+    padding: 6px 12px 10px;
+  }
+}
+
 .modal-section {
   margin-bottom: 12px;
 }
@@ -408,12 +437,27 @@ header h1 {
   margin-bottom: 0;
 }
 
+/* Tablet-specific spacing for effect categories */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .effect-category {
+    margin-bottom: 8px;
+  }
+}
+
 .effect-category-title {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--color-accent);
   margin-bottom: 6px;
   padding: 0 4px;
+}
+
+/* Tablet-specific adjustments for category titles */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .effect-category-title {
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+  }
 }
 
 .effect-grid {
@@ -445,14 +489,14 @@ header h1 {
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  padding: 10px 8px;
+  padding: 0;
   color: var(--color-text);
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
+  min-height: 40px;
   font-size: 0.85rem;
   text-align: center;
   line-height: 1.2;
@@ -512,7 +556,7 @@ header h1 {
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  padding: 8px;
+  padding: 0;
   color: var(--color-text);
   cursor: pointer;
   transition: all 0.2s;
@@ -520,7 +564,7 @@ header h1 {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  min-height: 70px;
+  min-height: 60px;
 }
 
 .palette-btn:hover {
@@ -570,7 +614,7 @@ header h1 {
   background: rgba(255, 255, 255, 0.05);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  padding: 8px;
+  padding: 0;
   color: var(--color-text);
   cursor: pointer;
   transition: all 0.2s;
@@ -578,7 +622,7 @@ header h1 {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  min-height: 70px;
+  min-height: 60px;
 }
 
 .color-btn:hover {
@@ -637,10 +681,47 @@ header h1 {
   font-weight: 500;
 }
 
+/* Tablet-specific slider adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .slider-group {
+    margin-bottom: 4px;
+  }
+  
+  .slider-group label {
+    margin-bottom: 2px;
+    font-size: 0.7rem;
+  }
+  
+  .slider {
+    height: 4px;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .controls-section {
+    padding: 6px 8px;
+  }
+}
+
 .slider-value {
   color: var(--color-primary);
   font-weight: 600;
   font-size: 0.9rem;
+}
+
+/* Tablet-specific slider value adjustments */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .slider-value {
+    font-size: 0.7rem;
+  }
 }
 
 .slider {
@@ -803,6 +884,133 @@ header h1 {
   .palette-grid,
   .color-grid {
     grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  }
+}
+
+/* Tablet-specific optimizations for less busy UI */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* More columns, smaller items */
+  .effect-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 6px;
+  }
+  
+  .palette-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 6px;
+    max-height: 160px;
+  }
+  
+  .color-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 6px;
+  }
+  
+  /* Smaller effect buttons */
+  .effect-btn {
+    padding: 0;
+    min-height: 28px;
+    font-size: 0.75rem;
+  }
+  
+  /* Smaller palette buttons */
+  .palette-btn {
+    padding: 0;
+    min-height: 45px;
+    gap: 2px;
+  }
+  
+  .palette-preview {
+    height: 14px;
+  }
+  
+  .palette-name {
+    font-size: 0.65rem;
+    line-height: 1.1;
+    margin-top: 1px;
+  }
+  
+  /* Smaller color buttons */
+  .color-btn {
+    padding: 0;
+    min-height: 45px;
+    gap: 2px;
+  }
+  
+  .color-swatch {
+    height: 18px;
+  }
+  
+  .color-name {
+    font-size: 0.65rem;
+    line-height: 1.1;
+  }
+  
+  /* Smaller modal sections */
+  .modal-section {
+    margin-bottom: 8px;
+  }
+  
+  .modal-section h3 {
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+  }
+  
+  .effect-categories {
+    max-height: 140px;
+  }
+  
+  .palette-grid {
+    max-height: 140px;
+  }
+}
+
+/* Landscape iPad - even more compact */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+  .effect-grid,
+  .palette-grid,
+  .color-grid {
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 5px;
+  }
+  
+  .effect-btn {
+    min-height: 26px;
+    padding: 0;
+    font-size: 0.7rem;
+  }
+  
+  .palette-btn,
+  .color-btn {
+    min-height: 42px;
+    padding: 0;
+    gap: 2px;
+  }
+  
+  .palette-preview {
+    height: 12px;
+  }
+  
+  .palette-name {
+    font-size: 0.6rem;
+    margin-top: 1px;
+  }
+  
+  .color-swatch {
+    height: 16px;
+  }
+  
+  .color-name {
+    font-size: 0.6rem;
+    margin-top: 1px;
+  }
+  
+  .effect-categories {
+    max-height: 120px;
+  }
+  
+  .palette-grid {
+    max-height: 120px;
   }
 }
 
