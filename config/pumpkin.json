@@ -34,6 +34,16 @@
       "group": "face",
       "color": "#FF6600"
     },
+    "bothRims": {
+      "name": "Both Outer Rims 🔗",
+      "group": "rim",
+      "multiSegment": true,
+      "targets": [
+        { "controller": "pumpkin_12v", "segment": 0 },
+        { "controller": "pumpkin_12v", "segment": 1 }
+      ],
+      "color": "#FF6600"
+    },
     "rightEye": {
       "name": "Right Eye",
       "controller": "pumpkin_12v",
@@ -82,16 +92,6 @@
         { "controller": "pumpkin_24v", "segment": 3 }
       ],
       "color": "#000044"
-    },
-    "bothRims": {
-      "name": "Both Outer Rims 🔗",
-      "group": "rim",
-      "multiSegment": true,
-      "targets": [
-        { "controller": "pumpkin_12v", "segment": 0 },
-        { "controller": "pumpkin_12v", "segment": 1 }
-      ],
-      "color": "#FF6600"
     },
     "allFace": {
       "name": "All Face 🔗",

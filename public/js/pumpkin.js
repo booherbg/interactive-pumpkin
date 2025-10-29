@@ -864,9 +864,6 @@ class PumpkinPainter {
     
     const svg = document.querySelector('.pumpkin-svg');
     
-    // List of face cutout features that should always remain dark (not colored)
-    const faceCutoutFeatures = ['leftEye', 'rightEye', 'nose', 'allMouth'];
-    
     // Determine which SVG elements to highlight
     let svgFeaturesToHighlight = [];
     
@@ -914,25 +911,23 @@ class PumpkinPainter {
       });
     }
     
-    // Filter out face cutout features - they should always remain dark
-    svgFeaturesToHighlight = svgFeaturesToHighlight.filter(feature => !faceCutoutFeatures.includes(feature));
-    
     console.log('SVG features to highlight:', svgFeaturesToHighlight);
     
     // Update visualization for each SVG element
     svgFeaturesToHighlight.forEach(elementFeature => {
-      const element = svg.querySelector(`[data-feature="${elementFeature}"]`);
-      if (!element) {
-        console.warn('Element not found for feature:', elementFeature);
+      // Use querySelectorAll to get all elements with this feature (e.g., both rim paths)
+      const elements = svg.querySelectorAll(`[data-feature="${elementFeature}"]`);
+      if (!elements || elements.length === 0) {
+        console.warn('Elements not found for feature:', elementFeature);
         return;
       }
       
-      console.log('Found element:', element, 'for feature:', elementFeature);
+      console.log('Found', elements.length, 'element(s) for feature:', elementFeature);
       
       // Store that this feature is active
       this.activeFeatures[elementFeature] = colors;
       
-      // Create or update gradient for this element
+      // Create or update gradient for this feature (shared across all matching elements)
       const gradientId = `gradient-${elementFeature}`;
       let gradient = document.getElementById(gradientId);
       const defs = svg.querySelector('defs') || svg.insertBefore(document.createElementNS('http://www.w3.org/2000/svg', 'defs'), svg.firstChild);
@@ -982,21 +977,29 @@ class PumpkinPainter {
       animateTransform.setAttribute('repeatCount', 'indefinite');
       gradient.appendChild(animateTransform);
       
-      // Apply gradient based on element type
-      if (element.classList.contains('inner-fill') || element.classList.contains('feature-cutout')) {
-        element.style.fill = `url(#${gradientId})`;
-        // For feature cutouts, also apply the gradient to the stroke for a cohesive look
+      // Apply gradient to all matching elements
+      elements.forEach(element => {
+        // Apply gradient based on element type
         if (element.classList.contains('feature-cutout')) {
+          element.style.fill = `url(#${gradientId})`;
+          // For feature cutouts, keep the stroke as dark border (don't apply gradient to stroke)
+          element.style.stroke = '#1a0000';
+          element.style.strokeWidth = '5px';
+          console.log('Applied fill gradient to:', elementFeature);
+        } else if (element.classList.contains('inner-fill')) {
+          // For inner fill, keep the stroke as dark border (don't apply gradient to stroke)
+          element.style.fill = `url(#${gradientId})`;
+          element.style.stroke = '#1a0000';
+          element.style.strokeWidth = '12px';
+          console.log('Applied fill gradient to inner fill with dark border:', elementFeature);
+        } else if (element.classList.contains('outer-shell-left') || element.classList.contains('outer-shell-right') || element.classList.contains('pumpkin-shell')) {
           element.style.stroke = `url(#${gradientId})`;
+          console.log('Applied stroke gradient to:', elementFeature);
         }
-        console.log('Applied fill gradient to:', elementFeature);
-      } else if (element.classList.contains('outer-shell-left') || element.classList.contains('outer-shell-right') || element.classList.contains('pumpkin-shell')) {
-        element.style.stroke = `url(#${gradientId})`;
-        console.log('Applied stroke gradient to:', elementFeature);
-      }
-      
-      // Add active class for additional styling
-      element.classList.add('feature-active');
+        
+        // Add active class for additional styling
+        element.classList.add('feature-active');
+      });
     });
   }
 

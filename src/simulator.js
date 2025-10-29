@@ -193,12 +193,12 @@ function createFallbackSVG() {
     
     <!-- Left outer shell (rim) -->
     <path d="M 70,120 A 240,260 0 0,0 70,520" 
-          class="clickable-area outer-shell-left" data-feature="leftRim" data-label="Left Rim"
+          class="clickable-area outer-shell-left" data-feature="bothRims" data-label="Both Outer Rims"
           fill="none" stroke="#ff6600" stroke-width="20"/>
     
     <!-- Right outer shell (rim) -->
     <path d="M 530,120 A 240,260 0 0,1 530,520" 
-          class="clickable-area outer-shell-right" data-feature="rightRim" data-label="Right Rim"
+          class="clickable-area outer-shell-right" data-feature="bothRims" data-label="Both Outer Rims"
           fill="none" stroke="#ff6600" stroke-width="20"/>
     
     <!-- Inner fill -->

@@ -192,12 +192,15 @@ header h1 {
 /* Pumpkin Elements */
 .inner-fill {
   fill: #ffb366;
-  stroke: none;
+  stroke: #1a0000 !important;
+  stroke-width: 12px !important;
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
 }
 
 .inner-fill:hover {
   fill: #ffc280;
-  filter: drop-shadow(0 0 10px rgba(255, 179, 102, 0.5));
+  stroke: #330000 !important;
+  filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.9));
 }
 
 .pumpkin-shell {
@@ -212,13 +215,13 @@ header h1 {
 
 .feature-cutout {
   fill: #000000;
-  stroke: #1a0000;
-  stroke-width: 5;
+  stroke: #1a0000 !important;
+  stroke-width: 5px !important;
   filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
 }
 
 .feature-cutout:hover {
-  stroke: #330000;
+  stroke: #330000 !important;
   filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.9));
 }
 
