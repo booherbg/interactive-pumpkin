@@ -69,6 +69,8 @@ class PumpkinPainter {
     this.inactivityDelay = 60000; // 60 seconds
     this.resetTimeout = null;
     this.resetDelay = 10000; // 10 seconds after screensaver activates
+    this.screensaverPresetTimeout = null; // Timer for resetting to preset 1 after 3 minutes of screensaver inactivity
+    this.screensaverPresetDelay = 180000; // 3 minutes (180000 ms) after screensaver activates
     this.screensaverActive = true; // Start with screensaver active
     this.shouldResetOnNextTap = false; // Flag to track if we should reset on next tap
     this.bouncingPumpkins = [];
@@ -628,13 +630,37 @@ class PumpkinPainter {
   async resetToPreset(silent = false) {
     try {
       if (!silent) {
-        this.showToast('🔄 Resetting to preset 1...');
+        this.showToast('🔄 Resetting to solid orange...');
       }
       
-      // Clear pumpkin visualizations immediately
-      this.clearPumpkinVisualization();
+      // Soft orange color (softer than #FF6600)
+      const softOrange = '#FF8800'; // Soft orange color
+      const rgb = hexToRgb(softOrange);
       
-      await api.loadPreset(1);
+      if (!rgb) {
+        throw new Error('Invalid color');
+      }
+      
+      // Update pumpkin visualization immediately before API call
+      this.updatePumpkinVisualization('wholePumpkin', [softOrange]);
+      
+      // Explicitly ensure face cutouts remain dark (they should be filtered out, but double-check)
+      const svg = document.querySelector('.pumpkin-svg');
+      const faceCutoutFeatures = ['leftEye', 'rightEye', 'nose', 'allMouth'];
+      faceCutoutFeatures.forEach(featureName => {
+        const element = svg.querySelector(`[data-feature="${featureName}"]`);
+        if (element) {
+          element.style.fill = '#000000';
+          element.style.stroke = '#1a0000';
+          element.style.strokeWidth = '5px';
+        }
+      });
+      
+      // Apply solid color effect (fx: 0) with soft orange to whole pumpkin
+      await api.setFeature('wholePumpkin', {
+        fx: 0, // Solid effect
+        col: [rgb] // WLED expects array of RGB arrays
+      });
       
       if (!silent) {
         this.showToast('✓ Reset complete!');
@@ -778,6 +804,15 @@ class PumpkinPainter {
     this.resetTimeout = setTimeout(() => {
       this.shouldResetOnNextTap = true;
     }, this.resetDelay);
+    
+    // Start timer - after 3 minutes of screensaver inactivity, reset to preset 1
+    this.screensaverPresetTimeout = setTimeout(async () => {
+      try {
+        await api.loadPreset(1);
+      } catch (error) {
+        console.error('Failed to reset to preset 1 after screensaver inactivity:', error);
+      }
+    }, this.screensaverPresetDelay);
   }
 
   hideScreensaver() {
@@ -789,6 +824,12 @@ class PumpkinPainter {
     if (this.resetTimeout) {
       clearTimeout(this.resetTimeout);
       this.resetTimeout = null;
+    }
+    
+    // Clear the screensaver preset timeout since user is active
+    if (this.screensaverPresetTimeout) {
+      clearTimeout(this.screensaverPresetTimeout);
+      this.screensaverPresetTimeout = null;
     }
     
     // Reset the flag since they tapped within the window
@@ -822,6 +863,9 @@ class PumpkinPainter {
     }
     
     const svg = document.querySelector('.pumpkin-svg');
+    
+    // List of face cutout features that should always remain dark (not colored)
+    const faceCutoutFeatures = ['leftEye', 'rightEye', 'nose', 'allMouth'];
     
     // Determine which SVG elements to highlight
     let svgFeaturesToHighlight = [];
@@ -869,6 +913,9 @@ class PumpkinPainter {
         }
       });
     }
+    
+    // Filter out face cutout features - they should always remain dark
+    svgFeaturesToHighlight = svgFeaturesToHighlight.filter(feature => !faceCutoutFeatures.includes(feature));
     
     console.log('SVG features to highlight:', svgFeaturesToHighlight);
     
@@ -962,6 +1009,17 @@ class PumpkinPainter {
         element.classList.remove('feature-active');
         element.style.fill = '';
         element.style.stroke = '';
+      }
+    });
+    
+    // Explicitly restore face cutouts to dark appearance
+    const faceCutoutFeatures = ['leftEye', 'rightEye', 'nose', 'allMouth'];
+    faceCutoutFeatures.forEach(featureName => {
+      const element = svg.querySelector(`[data-feature="${featureName}"]`);
+      if (element) {
+        element.style.fill = '#000000';
+        element.style.stroke = '#1a0000';
+        element.style.strokeWidth = '5px';
       }
     });
     
