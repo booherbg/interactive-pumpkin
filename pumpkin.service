@@ -1,0 +1,19 @@
+[Service]
+Type=simple
+User=led-dreams
+PAMName=login
+WorkingDirectory=/home/led-dreams/interactive-pumpkin/
+ExecStart=/home/led-dreams/interactive-pumpkin/start-pumpkin.sh
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Forcefully kill processes
+KillMode=mixed
+KillSignal=SIGKILL
+TimeoutStopSec=10
+# Execute custom stop command
+ExecStop=/bin/bash -c 'kill `ps aux | grep concurrently | grep ".js" | grep -v grep | awk '{print $2}'`; exit 0'
+[Install]
+WantedBy=multi-user.target
