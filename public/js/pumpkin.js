@@ -79,6 +79,23 @@ class PumpkinPainter {
     this.shouldResetOnNextTap = false; // Flag to track if we should reset on next tap
     this.bouncingPumpkins = [];
     
+    // Performance/low-power mode detection (older iPads, reduced motion)
+    this.lowPowerMode = false;
+    try {
+      const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const fewCores = typeof navigator.hardwareConcurrency === 'number' && navigator.hardwareConcurrency <= 2;
+      const lowDpr = typeof window.devicePixelRatio === 'number' && window.devicePixelRatio <= 1;
+      this.lowPowerMode = Boolean(prefersReduced || (fewCores && lowDpr));
+    } catch (e) {
+      this.lowPowerMode = false;
+    }
+    // Disable animated gradients on iPad/iOS for responsiveness
+    const ua = (navigator && navigator.userAgent) ? navigator.userAgent : '';
+    const isIOSiPad = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    this.disableGradientAnimation = !!isIOSiPad;
+    this.frameSkip = this.lowPowerMode ? 2 : 0; // skip updates to reduce CPU (every N frames)
+    this._frameTick = 0;
+    
     // Track active feature visualizations
     this.activeFeatures = {};
     
@@ -742,7 +759,7 @@ class PumpkinPainter {
 
   setupBouncingPumpkins() {
     const container = document.getElementById('screensaverBouncingBg');
-    const pumpkinCount = 50;
+    const pumpkinCount = this.lowPowerMode ? 12 : 50;
     this.bouncingPumpkins = [];
     
     // Create 50 bouncing pumpkins
@@ -757,9 +774,9 @@ class PumpkinPainter {
         element: pumpkin,
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
-        vx: (Math.random() - 0.5) * 2, // velocity between -1 and 1
-        vy: (Math.random() - 0.5) * 2,
-        size: 1.5 + Math.random() * 2, // size between 1.5rem and 3.5rem
+        vx: (Math.random() - 0.5) * (this.lowPowerMode ? 1 : 2),
+        vy: (Math.random() - 0.5) * (this.lowPowerMode ? 1 : 2),
+        size: (this.lowPowerMode ? 1.5 : 2) + Math.random() * (this.lowPowerMode ? 1.2 : 2.0)
       };
       
       // Set initial size
@@ -774,6 +791,11 @@ class PumpkinPainter {
 
   animateBouncingPumpkins() {
     if (!this.screensaverActive || !this.bouncingPumpkins || this.bouncingPumpkins.length === 0) {
+      return;
+    }
+    // Throttle updates in low-power mode
+    if (this.frameSkip && (this._frameTick++ % (this.frameSkip + 1) !== 0)) {
+      requestAnimationFrame(() => this.animateBouncingPumpkins());
       return;
     }
     
@@ -1148,34 +1170,38 @@ class PumpkinPainter {
         }
       }
       
-      // Add/update color stops
+      // Add/update color stops (disable animation on iPad or in low-power mode)
+      const shouldAnimateGradient = !this.disableGradientAnimation && !this.lowPowerMode;
+      const stopAnimDur = this.lowPowerMode ? '10s' : '6s';
       for (let i = 0; i < 3; i++) {
         const stop = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
         stop.setAttribute('offset', `${(i * 50)}%`);
         stop.setAttribute('stop-color', colors[i % colors.length]);
         
-        const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
-        animate.setAttribute('attributeName', 'stop-color');
-        animate.setAttribute('dur', '3s');
-        animate.setAttribute('repeatCount', 'indefinite');
-        
-        const colorIndex = i % colors.length;
-        const nextColorIndex = (i + 1) % colors.length;
-        animate.setAttribute('values', `${colors[colorIndex]};${colors[nextColorIndex]};${colors[colorIndex]}`);
-        
-        stop.appendChild(animate);
+        if (shouldAnimateGradient) {
+          const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+          animate.setAttribute('attributeName', 'stop-color');
+          animate.setAttribute('dur', stopAnimDur);
+          animate.setAttribute('repeatCount', 'indefinite');
+          const colorIndex = i % colors.length;
+          const nextColorIndex = (i + 1) % colors.length;
+          animate.setAttribute('values', `${colors[colorIndex]};${colors[nextColorIndex]};${colors[colorIndex]}`);
+          stop.appendChild(animate);
+        }
         gradient.appendChild(stop);
       }
       
-      // Add rotation animation
-      const animateTransform = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
-      animateTransform.setAttribute('attributeName', 'gradientTransform');
-      animateTransform.setAttribute('type', 'rotate');
-      animateTransform.setAttribute('from', '0 0.5 0.5');
-      animateTransform.setAttribute('to', '360 0.5 0.5');
-      animateTransform.setAttribute('dur', '6s');
-      animateTransform.setAttribute('repeatCount', 'indefinite');
-      gradient.appendChild(animateTransform);
+      // Add rotation animation (disable on iPad or in low-power mode)
+      if (shouldAnimateGradient) {
+        const animateTransform = document.createElementNS('http://www.w3.org/2000/svg', 'animateTransform');
+        animateTransform.setAttribute('attributeName', 'gradientTransform');
+        animateTransform.setAttribute('type', 'rotate');
+        animateTransform.setAttribute('from', '0 0.5 0.5');
+        animateTransform.setAttribute('to', '360 0.5 0.5');
+        animateTransform.setAttribute('dur', this.lowPowerMode ? '24s' : '12s');
+        animateTransform.setAttribute('repeatCount', 'indefinite');
+        gradient.appendChild(animateTransform);
+      }
       
       // Apply gradient to all matching elements
       elements.forEach(element => {
