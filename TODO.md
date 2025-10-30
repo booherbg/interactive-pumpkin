@@ -9,7 +9,10 @@
     - [x] Update 'reset' functionality (LLM):
         - [x] When resetting (via button click and after screen saver is touched after the period of time), instead of of resetting to preset 1, let's just reset the whole pumpkin to solid color effect with a soft orange (LLM)
         - [x] New feature: When the screensaver is active, after 3 minutes of inactivity, reset to preset 1 for both controllers (this is what the previous reset functionality did). This way after a few minutes, the pumpkin will go back to default mode (LLM)
-    - [ ] When clicking either rim, send to both. No more separate left/right outer rims - clicking either should alway send to both (LLM)
+    - [x] When clicking either rim, send to both. No more separate left/right outer rims - clicking either should alway send to both (LLM)
+    - [ ] Refactor the reset paradigm:
+        - 'Reset' behavior stays the same
+        - Reduce the behavior of doing preset 1 from 5 minutes to 30 seconds on screen saver
     - [x] Organize palettes into good groupings (ME)
     - [x] Add wifi mac addresses to LED DREAMS (ME)
     - [x] Update Raspi with this project and startup (ME)

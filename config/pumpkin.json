@@ -87,6 +87,7 @@
       "group": "background",
       "multiSegment": true,
       "targets": [
+        { "controller": "pumpkin_24v", "segment": 0 },
         { "controller": "pumpkin_24v", "segment": 1 },
         { "controller": "pumpkin_24v", "segment": 2 },
         { "controller": "pumpkin_24v", "segment": 3 }
@@ -101,8 +102,7 @@
         { "controller": "pumpkin_12v", "segment": 2 },
         { "controller": "pumpkin_12v", "segment": 3 },
         { "controller": "pumpkin_12v", "segment": 4 },
-        { "controller": "pumpkin_12v", "segment": 5 },
-        { "controller": "pumpkin_24v", "segment": 0 }
+        { "controller": "pumpkin_12v", "segment": 5 }
       ],
       "color": "#FF6600"
     },
@@ -111,8 +111,7 @@
       "group": "mouth",
       "multiSegment": true,
       "targets": [
-        { "controller": "pumpkin_12v", "segment": 5 },
-        { "controller": "pumpkin_24v", "segment": 0 }
+        { "controller": "pumpkin_12v", "segment": 5 }
       ],
       "color": "#FF6600"
     },

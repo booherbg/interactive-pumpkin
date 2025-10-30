@@ -517,7 +517,7 @@ function generateVisualizationHTML(simulators, pumpkinConfig) {
           6: 'pumpkinShell'
         },
         'pumpkin_24v': {
-          0: 'allMouth',
+          0: 'innerFiller',
           1: 'innerFiller',
           2: 'innerFiller',
           3: 'innerFiller',

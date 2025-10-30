@@ -69,8 +69,8 @@ class PumpkinPainter {
     this.inactivityDelay = 60000; // 60 seconds
     this.resetTimeout = null;
     this.resetDelay = 10000; // 10 seconds after screensaver activates
-    this.screensaverPresetTimeout = null; // Timer for resetting to preset 1 after 3 minutes of screensaver inactivity
-    this.screensaverPresetDelay = 180000; // 3 minutes (180000 ms) after screensaver activates
+    this.screensaverPresetTimeout = null; // Timer for resetting to preset 1 after a delay while screensaver is active
+    this.screensaverPresetDelay = 30000; // 30 seconds after screensaver activates
     this.screensaverActive = true; // Start with screensaver active
     this.shouldResetOnNextTap = false; // Flag to track if we should reset on next tap
     this.bouncingPumpkins = [];
