@@ -830,6 +830,12 @@ class PumpkinPainter {
     const screensaver = document.getElementById('screensaver');
     screensaver.classList.remove('hidden');
     this.screensaverActive = true;
+    // Ensure control modal is closed when entering screensaver so new session starts clean
+    const modal = document.getElementById('controlModal');
+    if (modal && modal.classList.contains('show')) {
+      modal.classList.remove('show');
+      this.selectedFeature = null;
+    }
     
     // DON'T clear pumpkin visualizations - keep the current effect
     // DON'T reset to preset yet
