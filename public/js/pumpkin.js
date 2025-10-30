@@ -69,8 +69,12 @@ class PumpkinPainter {
     this.inactivityDelay = 60000; // 60 seconds
     this.resetTimeout = null;
     this.resetDelay = 10000; // 10 seconds after screensaver activates
-    this.screensaverPresetTimeout = null; // Timer for resetting to preset 1 after a delay while screensaver is active
-    this.screensaverPresetDelay = 30000; // 30 seconds after screensaver activates
+    // Removed preset-1 fallback timer; idle system replaces it
+    // Idle cycle timers
+    this.idleStartTimeout = null; // start idle behavior after 30s
+    this.idleInterval = null; // repeat every 60s
+    this.idleStartDelay = 30000; // 30 seconds
+    this.idleRepeatMs = 60000; // 60 seconds
     this.screensaverActive = true; // Start with screensaver active
     this.shouldResetOnNextTap = false; // Flag to track if we should reset on next tap
     this.bouncingPumpkins = [];
@@ -107,7 +111,12 @@ class PumpkinPainter {
       // Setup screensaver
       this.setupScreensaver();
       
-      // Screensaver is already showing on page load
+      // If screensaver starts visible, kick off idle timers now
+      const screensaverEl = document.getElementById('screensaver');
+      const isVisible = screensaverEl && !screensaverEl.classList.contains('hidden');
+      if (this.screensaverActive && isVisible) {
+        this.startIdleTimers();
+      }
       
     } catch (error) {
       console.error('Failed to initialize:', error);
@@ -661,6 +670,18 @@ class PumpkinPainter {
         fx: 0, // Solid effect
         col: [rgb] // WLED expects array of RGB arrays
       });
+
+      // Re-center sliders to default values to match reset state
+      this.speed = 128;
+      this.intensity = 128;
+      const speedSlider = document.getElementById('speedSlider');
+      const intensitySlider = document.getElementById('intensitySlider');
+      const speedValue = document.getElementById('speedValue');
+      const intensityValue = document.getElementById('intensityValue');
+      if (speedSlider) speedSlider.value = 128;
+      if (speedValue) speedValue.textContent = '128';
+      if (intensitySlider) intensitySlider.value = 128;
+      if (intensityValue) intensityValue.textContent = '128';
       
       if (!silent) {
         this.showToast('✓ Reset complete!');
@@ -805,14 +826,8 @@ class PumpkinPainter {
       this.shouldResetOnNextTap = true;
     }, this.resetDelay);
     
-    // Start timer - after 3 minutes of screensaver inactivity, reset to preset 1
-    this.screensaverPresetTimeout = setTimeout(async () => {
-      try {
-        await api.loadPreset(1);
-      } catch (error) {
-        console.error('Failed to reset to preset 1 after screensaver inactivity:', error);
-      }
-    }, this.screensaverPresetDelay);
+    // Schedule idle behavior start after 30s, then repeat every 60s while screensaver stays active
+    this.startIdleTimers();
   }
 
   hideScreensaver() {
@@ -826,11 +841,8 @@ class PumpkinPainter {
       this.resetTimeout = null;
     }
     
-    // Clear the screensaver preset timeout since user is active
-    if (this.screensaverPresetTimeout) {
-      clearTimeout(this.screensaverPresetTimeout);
-      this.screensaverPresetTimeout = null;
-    }
+    // Clear idle timers
+    this.clearIdleTimers();
     
     // Reset the flag since they tapped within the window
     this.shouldResetOnNextTap = false;
@@ -849,6 +861,194 @@ class PumpkinPainter {
     this.inactivityTimeout = setTimeout(() => {
       this.showScreensaver();
     }, this.inactivityDelay);
+  }
+
+  // ----- Idle behavior helpers -----
+  getEffectNameById(id) {
+    const e = this.config.effects.effects.find(x => x.id === id);
+    return e ? `${e.name} (#${e.id})` : `#${id}`;
+  }
+
+  getPaletteNameById(id) {
+    const p = this.config.palettes.palettes.find(x => x.id === id);
+    return p ? `${p.name} (#${p.id})` : `#${id}`;
+  }
+
+  startIdleTimers() {
+    if (this.idleStartTimeout) clearTimeout(this.idleStartTimeout);
+    if (this.idleInterval) {
+      clearInterval(this.idleInterval);
+      this.idleInterval = null;
+    }
+    this.idleStartTimeout = setTimeout(() => {
+      this.runIdleCycle();
+      this.idleInterval = setInterval(() => {
+        this.runIdleCycle();
+      }, this.idleRepeatMs);
+    }, this.idleStartDelay);
+  }
+
+  clearIdleTimers() {
+    if (this.idleStartTimeout) {
+      clearTimeout(this.idleStartTimeout);
+      this.idleStartTimeout = null;
+    }
+    if (this.idleInterval) {
+      clearInterval(this.idleInterval);
+      this.idleInterval = null;
+    }
+  }
+
+  getVisibleEffectsForIdle() {
+    // Use only effects visible in UI and exclude Solid (id 0) for variety
+    return this.config.effects.effects.filter(e => e.show !== false && e.id !== 0);
+  }
+
+  getVisiblePalettesForIdle() {
+    // Use only palettes visible in UI, exclude those requiring extra custom colors
+    // Exclude: Single Color (2), Two Colors (3), 2-Color Gradient (4)
+    const excluded = new Set([2, 3, 4]);
+    return this.config.palettes.palettes.filter(p => p.show !== false && !excluded.has(p.id));
+  }
+
+  pickRandomEffect() {
+    const effects = this.getVisibleEffectsForIdle();
+    if (effects.length === 0) return null;
+    return effects[Math.floor(Math.random() * effects.length)];
+  }
+
+  pickRandomPalette(excludeIds = []) {
+    const excludeSet = new Set(excludeIds);
+    const palettes = this.getVisiblePalettesForIdle().filter(p => !excludeSet.has(p.id));
+    if (palettes.length === 0) return null;
+    return palettes[Math.floor(Math.random() * palettes.length)];
+  }
+
+  async applyEffectPalette(featureName, effectId, paletteId) {
+    const props = {
+      fx: effectId,
+      pal: paletteId,
+      sx: this.speed,
+      ix: this.intensity
+    };
+    try {
+      await api.setFeature(featureName, props);
+    } catch (error) {
+      console.error(`Failed to set feature ${featureName}:`, error);
+    }
+  }
+
+  async runIdleCycle() {
+    if (!this.screensaverActive) return;
+    console.log('[Idle] Running idle cycle');
+
+    // Pick random speed/intensity for this idle tick and reflect in UI
+    const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    this.speed = rand(0, 255);
+    this.intensity = rand(0, 255);
+    const speedSlider = document.getElementById('speedSlider');
+    const intensitySlider = document.getElementById('intensitySlider');
+    const speedValue = document.getElementById('speedValue');
+    const intensityValue = document.getElementById('intensityValue');
+    if (speedSlider) speedSlider.value = this.speed;
+    if (speedValue) speedValue.textContent = String(this.speed);
+    if (intensitySlider) intensitySlider.value = this.intensity;
+    if (intensityValue) intensityValue.textContent = String(this.intensity);
+    console.log('[Idle] Params:', { speed: this.speed, intensity: this.intensity });
+
+    // 50% whole pumpkin with random effect + Random Cycle palette
+    // 25% split: face has E1+P1, filler E2+P2, shell+rim E3+P3
+    // 25% same effect everywhere but each region gets its own random palette
+    const roll = Math.random();
+    const effectsPool = this.getVisibleEffectsForIdle();
+    const palettesPool = this.getVisiblePalettesForIdle();
+    if (effectsPool.length === 0 || palettesPool.length === 0) {
+      return;
+    }
+
+    if (roll < 0.5) {
+      // Whole pumpkin
+      const fx = this.pickRandomEffect();
+      const randomCyclePaletteId = 1; // "Random Cycle"
+      if (fx) {
+        await this.applyEffectPalette('wholePumpkin', fx.id, randomCyclePaletteId);
+        console.log('[Idle] Mode: WHOLE', {
+          effect: this.getEffectNameById(fx.id),
+          palette: this.getPaletteNameById(randomCyclePaletteId)
+        });
+      }
+      return;
+    }
+
+    if (roll < 0.75) {
+      // Three groups
+      const fx1 = this.pickRandomEffect();
+      const p1 = this.pickRandomPalette();
+      const usedP1 = p1 ? [p1.id] : [];
+      const fx2 = this.pickRandomEffect();
+      const p2 = this.pickRandomPalette(usedP1);
+      const usedP12 = p2 ? [...usedP1, p2.id] : usedP1;
+      const fx3 = this.pickRandomEffect();
+      const p3 = this.pickRandomPalette(usedP12);
+      if (fx1 && p1) {
+        await Promise.all([
+          this.applyEffectPalette('bothEyes', fx1.id, p1.id),
+          this.applyEffectPalette('nose', fx1.id, p1.id),
+          this.applyEffectPalette('mouth', fx1.id, p1.id)
+        ]);
+      }
+      if (fx2 && p2) {
+        await this.applyEffectPalette('innerFiller', fx2.id, p2.id);
+      }
+      if (fx3 && p3) {
+        await Promise.all([
+          this.applyEffectPalette('pumpkinShell', fx3.id, p3.id),
+          this.applyEffectPalette('bothRims', fx3.id, p3.id)
+        ]);
+      }
+      console.log('[Idle] Mode: GROUPED', {
+        face: fx1 && p1 ? { effect: this.getEffectNameById(fx1.id), palette: this.getPaletteNameById(p1.id) } : 'skipped',
+        filler: fx2 && p2 ? { effect: this.getEffectNameById(fx2.id), palette: this.getPaletteNameById(p2.id) } : 'skipped',
+        shellAndRims: fx3 && p3 ? { effect: this.getEffectNameById(fx3.id), palette: this.getPaletteNameById(p3.id) } : 'skipped'
+      });
+      return;
+    }
+
+    // Same effect, different palettes per region
+    const fx = this.pickRandomEffect();
+    if (!fx) return;
+    const pEyes = this.pickRandomPalette();
+    const used1 = pEyes ? [pEyes.id] : [];
+    const pNose = this.pickRandomPalette(used1);
+    const used2 = pNose ? [...used1, pNose.id] : used1;
+    const pMouth = this.pickRandomPalette(used2);
+    const used3 = pMouth ? [...used2, pMouth.id] : used2;
+    const pFill = this.pickRandomPalette(used3);
+    const used4 = pFill ? [...used3, pFill.id] : used3;
+    const pShell = this.pickRandomPalette(used4);
+    const used5 = pShell ? [...used4, pShell.id] : used4;
+    const pRims = this.pickRandomPalette(used5);
+
+    await Promise.all([
+      pEyes && this.applyEffectPalette('bothEyes', fx.id, pEyes.id),
+      pNose && this.applyEffectPalette('nose', fx.id, pNose.id),
+      pMouth && this.applyEffectPalette('mouth', fx.id, pMouth.id),
+      pFill && this.applyEffectPalette('innerFiller', fx.id, pFill.id),
+      pShell && this.applyEffectPalette('pumpkinShell', fx.id, pShell.id),
+      pRims && this.applyEffectPalette('bothRims', fx.id, pRims.id)
+    ].filter(Boolean));
+
+    console.log('[Idle] Mode: SAME_EFFECT_MULTI_PALETTE', {
+      effect: this.getEffectNameById(fx.id),
+      palettes: {
+        eyes: pEyes ? this.getPaletteNameById(pEyes.id) : 'skipped',
+        nose: pNose ? this.getPaletteNameById(pNose.id) : 'skipped',
+        mouth: pMouth ? this.getPaletteNameById(pMouth.id) : 'skipped',
+        filler: pFill ? this.getPaletteNameById(pFill.id) : 'skipped',
+        shell: pShell ? this.getPaletteNameById(pShell.id) : 'skipped',
+        rims: pRims ? this.getPaletteNameById(pRims.id) : 'skipped'
+      }
+    });
   }
 
 
