@@ -66,15 +66,14 @@ class PumpkinPainter {
     
     // Screensaver settings
     this.inactivityTimeout = null;
-    this.inactivityDelay = 60000; // 60 seconds
+    this.inactivityDelay = 10000; // screen saver activation delay
     this.resetTimeout = null;
-    this.resetDelay = 10000; // 10 seconds after screensaver activates
-    // Removed preset-1 fallback timer; idle system replaces it
+    this.resetDelay = 5000; // how long after screensaver activates before user can tap to reset
     // Idle cycle timers
     this.idleStartTimeout = null; // start idle behavior after 30s
     this.idleInterval = null; // repeat every 60s
-    this.idleStartDelay = 30000; // 30 seconds
-    this.idleRepeatMs = 60000; // 60 seconds
+    this.idleStartDelay = 10000; // after screensaver activates, how long before idle routine starts
+    this.idleRepeatMs = 60000; // how often to repeat the idle routine
     this.screensaverActive = true; // Start with screensaver active
     this.shouldResetOnNextTap = false; // Flag to track if we should reset on next tap
     this.bouncingPumpkins = [];
