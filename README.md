@@ -34,6 +34,17 @@ I did not write a single line of code for this project by hand. This was the fir
 
 </div>
 
+### Web Interface
+
+<div align="center">
+
+![Web Interface 1](docs/web-1.jpg)
+![Web Interface 2](docs/web-2.jpg)
+![Web Interface 3](docs/web-3.jpg)
+![Web Interface 4](docs/web-4.jpg)
+
+</div>
+
 ## Features
 
 - **Visual Pumpkin Interface** - Tap on different parts of the pumpkin to control them
