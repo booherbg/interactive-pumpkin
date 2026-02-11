@@ -2,10 +2,9 @@
 
 ![Pumpkin Painter Demo](docs/jackie-sm.gif)
 
-A web app for controlling a Halloween pumpkin LED installation using WLED controllers. Features a visual pumpkin interface and an admin panel.
+A web app for controlling a Halloween pumpkin LED installation using WLED controllers. Features a visual pumpkin interface, a hardware simulator, and an admin panel. The pumpkin installation is colloquially and lovingly nicknamed 'Jackie'.
 
-This installation was featured at [Night Bazaar Spook](https://www.folkways.org/schedule/night-bazaar-spook) in November 2025 in partnership with Folkways and [LesleyDidThat](https://www.lesleydidthat.com/). Fargo, ND.
-
+This installation was featured at [Night Bazaar Spook](https://www.folkways.org/schedule/night-bazaar-spook) in November 2025 in partnership with [LesleyDidThat](https://www.lesleydidthat.com/) and Folkways. Fargo, ND.
 
 ## About this project
 
@@ -27,11 +26,11 @@ I did not write a single line of code for this project by hand. This was the fir
 
 <div align="center">
 
-![Screenshot 1](docs/jackie1.jpg)
-![Screenshot 2](docs/jackie2.jpg)
-![Screenshot 3](docs/jackie3.jpg)
-![Screenshot 4](docs/jackie4.jpg)
-![Screenshot 5](docs/jackie5.jpg)
+<!-- ![Jackie 1](docs/jackie1.jpg) -->
+![Jackie 2](docs/jackie2.jpg)
+![Jackie 3](docs/jackie3.jpg)
+![Jackie 4](docs/jackie4.jpg)
+![Jackie 5](docs/jackie5.jpg)
 
 </div>
 
