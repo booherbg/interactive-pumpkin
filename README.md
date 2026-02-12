@@ -8,7 +8,7 @@ This installation was featured at [Night Bazaar Spook](https://www.folkways.org/
 
 ## About this project
 
-This project started simple enough. We had pixel and bullet LEDs and wanted to hang them on a grid wall in the shape of a pumpkin as a fun background installation. The idea for interactivity came a few days before the event and I wanted to push myself to see what is possible when someone who understands the architecture of a simple system uses an advanced LLM to build out a user interface using only english language. It all started in [ARCHITECTURE.md](./ARCHITECTURE.md) - with 20 minutes of writing and a half hour of conversation with the LLM, we had a prototype up and running.
+This project started simple enough. We had pixel and bullet LEDs and wanted to hang them on a grid wall in the shape of a pumpkin as a fun background installation. The idea for interactivity came a few days before the event and I wanted to push myself to see what is possible when someone who understands the architecture of a simple system uses an advanced LLM to build out a user interface using only english language. It all started in [DESIGN.md](./docs/DESIGN.md) - with 20 minutes of writing and a half hour of conversation with the LLM, we had a prototype up and running.
 
 This project was deployed using 2 DigOcta WLED controllers, 2600 LEDs (2000 12v @ 120 watts, 600 24v bullet pixels @ 150 watts), an offline wifi network running on an old Airport Extreme base station, a raspberry pi running this software, and an iPad (for viewing the html page on the local network).
 
