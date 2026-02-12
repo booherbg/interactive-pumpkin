@@ -1,7 +1,7 @@
 # Architecture
 
 This is a simple project to test an idea to allow a user to set colors of a 2D pumpkin using DDP (or artnet).
-
+```
 Current Hardware:
     - WLED (14.3) controllers on local lan
         - 1x 2000 pixels across 8 channels (12v controller)
@@ -51,3 +51,4 @@ Basic Features:
         - Create various scenes in xLights
         - Activate xLights via HTTP when user selects from a list of effects (1-5)
         - Questions: Is xLights easy to set up in this way? Can users select colors or just FX? How does this work?
+```
