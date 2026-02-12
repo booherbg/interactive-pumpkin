@@ -20,8 +20,6 @@ I did not write a single line of code for this project by hand. This was the fir
 
 ## Gallery
 
-![Pumpkin Painter Demo](docs/jackie-sm.gif)
-
 ![Pumpkin Painter Demo](docs/jackie-demo.gif)
 
 <div align="center">
